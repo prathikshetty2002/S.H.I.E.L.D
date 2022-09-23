@@ -13,8 +13,9 @@ import {
     DrawerContent,
     DrawerCloseButton,
 } from '@chakra-ui/react'
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import LoginModal from "./LoginModal"
+import { onAuthStateChanged, signOut } from "firebase/auth"
 
 
 
@@ -25,10 +26,28 @@ const Navbar: React.FC = () => {
     const { isOpen: isOpenmodal, onOpen: onOpenmodal, onClose: onClosemodal } = useDisclosure()
     const btnRef = React.useRef()
     const router = useRouter()
+    const [user, setUser] = useState<boolean>(false)
+    useEffect(() => {
+        console.log("hello???")
+        // setUser(!!auth.currentUser)
+        console.log("current user: ", user)
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+              // User is signed in, see docs for a list of available properties
+              // https://firebase.google.com/docs/reference/js/firebase.User
+              setUser(true)
+              // ...
+            } else {
+              // User is signed out
+              // ...
+              setUser(false)
+            }
+          });
+    },[])
 
 
-
-
+      
 
     // function onSigninSubmit() {
     //     const phoneNumber = "+91" + number;
@@ -63,6 +82,15 @@ const Navbar: React.FC = () => {
 
     const handleCommunity = ()=>{
             router.push('/community')
+    }
+
+    const handleSignout = () => {
+        signOut(auth).then(() => {
+            console.log("logout done")
+        }).catch(() => {
+            console.log("error in logout")
+        })
+
     }
 
     return (
@@ -101,7 +129,12 @@ const Navbar: React.FC = () => {
                     </DrawerBody>
                     {/* home ,profile , community ,explore safe spot , donation, redeem */}
                     <DrawerFooter>
-                        <Button onClick={onOpenmodal} bg="blue" color={"white"} w="full" fontSize={"18px"}>Login</Button>
+                        {
+                            !user ? 
+                            <Button onClick={onOpenmodal} bg="blue" color={"white"} w="full" fontSize={"18px"}> Login</Button>
+                            :
+                            <Button onClick={handleSignout} bg="blue" color={"white"} w="full" fontSize={"18px"}> Logout</Button>
+                        }
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
