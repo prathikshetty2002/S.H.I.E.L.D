@@ -1,7 +1,7 @@
-import { Box, Button, Input, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Button, Image, Input, useDisclosure, useToast } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import Navbar from '../components/Navbar'
-import { storage } from '../firebase'
+import { storage, firestore } from '../firebase'
 import {
     Modal,
     ModalOverlay,
@@ -12,9 +12,9 @@ import {
     ModalCloseButton,
 } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
-import {v4} from 'uuid'
+import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
-
+import { addDoc, collection } from '@firebase/firestore'
 
 
 
@@ -24,7 +24,11 @@ const community: NextPage = () => {
         hiddenFileInput.current.click();
     }
 
-    const[loading,setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [imgurl, setimgurl] = useState("")
+    const [disp, setdisp] = useState("none")
+    const [content,setcontent] = useState("")
+    const[postLoading,setpostLoading] = useState(false)
 
 
     const toast = useToast()
@@ -38,7 +42,8 @@ const community: NextPage = () => {
             const imageref = ref(storage, `images/${imgname}`)
             await uploadBytes(imageref, fileUploaded)
             const link = await getDownloadURL(imageref)
-            
+            setimgurl(link)
+            setdisp("block")
 
         } catch (err) {
             toast({
@@ -53,11 +58,39 @@ const community: NextPage = () => {
         setLoading(false)
     }
 
+    const handlePost = async () => {
+        setpostLoading(true)
+        try {
+            const dbRef = collection(firestore, "posts");
+            const data =  {
+                link : imgurl,
+                content : content
+            }
+            addDoc(dbRef, data)
+                .then(docRef => {
+                    toast({
+                        title: 'Success',
+                        description: "Post created successfully",
+                        status: 'success',
+                        duration: 6000,
+                        isClosable: true,
+                    })
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+                
+        } catch (err) {
+            console.log(err.message)
+        }
+        setpostLoading(false)
+    }
+
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
-        <Box>
+        <Box mt={"10vh"} >
             <Navbar />
-            <Box my={"2vh"}>
+            <Box my={"0vh"}>
                 <Box display={"flex"} w="full" justifyContent={"right"} p={2}>
                     <Button onClick={onOpen} colorScheme={"blue"}>Add post</Button>
                 </Box>
@@ -75,9 +108,13 @@ const community: NextPage = () => {
                                         <Input onChange={handleChange} ref={hiddenFileInput} display={"none"} id="inp" type="file" />
                                     </Button>
                                 </Box>
+                                <Box w="full" mt="2vh" h="30vh" p={2} display={disp}>
+                                    <Image boxShadow={"0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"} borderRadius={"12px"} w="full" h="full" display={disp} src={imgurl}>
 
+                                    </Image>
+                                </Box>
                                 <Box mt="2vh">
-                                    <Input placeholder='Enter text' />
+                                    <Input onChange={(e)=>setcontent(e.target.value)} placeholder='Enter text' />
                                 </Box>
                             </ModalBody>
 
@@ -86,7 +123,10 @@ const community: NextPage = () => {
                                     <Button colorScheme='blue' mr={3} onClick={onClose}>
                                         Cancel
                                     </Button>
-                                    <Button colorScheme={"blue"}>Post</Button>
+                                    <Button colorScheme={"blue"} isLoading={postLoading} onClick={async()=>{
+                                        await handlePost()
+                                        onClose()
+                                    }}>Post</Button>
                                 </Box>
                             </ModalFooter>
                         </ModalContent>
