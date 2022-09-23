@@ -24,3 +24,8 @@ a {
     background: black;
   }
 }
+
+.homeMap {
+  width: 100%;
+  height: 20rem;
+}

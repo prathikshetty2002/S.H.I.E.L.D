@@ -116,7 +116,7 @@ const Navbar: React.FC = () => {
 
     return (
         <>
-            <Box p={3} alignItems="center" w="full" bg={"aqua"} display="flex" justifyContent={"space-between"} >
+            <Box p={3} zIndex="docked" rounded={"2xl"} alignItems="center" w="96" mx={"auto"} bg={"aqua"} display="flex" position="fixed" top="5" left="0" justifyContent={"space-between"} >
                 <Box>
                     <Heading fontSize={"20px"}>S.H.I.E.L.D</Heading>
                 </Box>

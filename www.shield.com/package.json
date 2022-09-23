@@ -13,12 +13,18 @@
     "@chakra-ui/react": "^2.3.4",
     "@emotion/react": "11",
     "@emotion/styled": "11",
+    "@types/leaflet": "^1.8.0",
     "firebase": "^9.10.0",
     "framer-motion": "6",
+    "leaflet": "^1.9.0",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+<<<<<<< HEAD
     "uuid": "^9.0.0"
+=======
+    "react-leaflet": "^4.0.2"
+>>>>>>> bb24d9239ed41e0644bf62b1967a0b3247ed60a4
   },
   "devDependencies": {
     "@types/node": "18.7.18",
