@@ -1591,6 +1591,13 @@
   dependencies:
     tslib "^2.4.0"
 
+"@types/firebase@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@types/firebase/-/firebase-3.2.1.tgz#17c1c8fee7485ab09668d2461e34540bdf44b3b1"
+  integrity sha512-G8XgHMu2jHlElfc2xVNaYP50F0qrqeTCjgeG1v5b4SRwWG4XKC4fCuEdVZuZaMRmVygcnbRZBAo9O7RsDvmkGQ==
+  dependencies:
+    firebase "*"
+
 "@types/geojson@*":
   version "7946.0.10"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.10.tgz#6dfbf5ea17142f7f9a043809f1cd4c448cb68249"
@@ -2405,9 +2412,41 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-firebase@^9.10.0:
+firebase@*:
   version "9.10.0"
   resolved "https://registry.npmjs.org/firebase/-/firebase-9.10.0.tgz"
+  integrity sha512-oSuED6BT+gQrOoXPV/xkxBLMk03A9nDXosW0xy4loQtGRJr9gW6JXgEOr0nmXFMTGzP87CpoC8Kd6y7XKSAeqQ==
+  dependencies:
+    "@firebase/analytics" "0.8.0"
+    "@firebase/analytics-compat" "0.1.13"
+    "@firebase/app" "0.7.33"
+    "@firebase/app-check" "0.5.12"
+    "@firebase/app-check-compat" "0.2.12"
+    "@firebase/app-compat" "0.1.34"
+    "@firebase/app-types" "0.7.0"
+    "@firebase/auth" "0.20.7"
+    "@firebase/auth-compat" "0.2.20"
+    "@firebase/database" "0.13.6"
+    "@firebase/database-compat" "0.2.6"
+    "@firebase/firestore" "3.5.0"
+    "@firebase/firestore-compat" "0.1.25"
+    "@firebase/functions" "0.8.4"
+    "@firebase/functions-compat" "0.2.4"
+    "@firebase/installations" "0.5.12"
+    "@firebase/installations-compat" "0.1.12"
+    "@firebase/messaging" "0.9.16"
+    "@firebase/messaging-compat" "0.1.16"
+    "@firebase/performance" "0.5.12"
+    "@firebase/performance-compat" "0.1.12"
+    "@firebase/remote-config" "0.3.11"
+    "@firebase/remote-config-compat" "0.1.12"
+    "@firebase/storage" "0.9.9"
+    "@firebase/storage-compat" "0.1.17"
+    "@firebase/util" "1.6.3"
+
+firebase@^9.10.0:
+  version "9.10.0"
+  resolved "https://registry.yarnpkg.com/firebase/-/firebase-9.10.0.tgz#07e22bddce3cc1f380c440edc6286c09ac6cce8f"
   integrity sha512-oSuED6BT+gQrOoXPV/xkxBLMk03A9nDXosW0xy4loQtGRJr9gW6JXgEOr0nmXFMTGzP87CpoC8Kd6y7XKSAeqQ==
   dependencies:
     "@firebase/analytics" "0.8.0"
