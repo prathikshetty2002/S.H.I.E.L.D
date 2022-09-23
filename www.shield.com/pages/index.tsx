@@ -10,7 +10,7 @@ const Home: NextPage = () => {
     <Box>
       <Navbar />
 
-      <Box>
+      <Box zIndex="base" position={"fixed"} >
       <Map className="homeMap" center={DEFAULT_CENTER} zoom={12}>
             <>
               
