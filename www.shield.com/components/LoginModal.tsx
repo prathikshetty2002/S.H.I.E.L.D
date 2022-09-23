@@ -1,4 +1,3 @@
-import firebase from "firebase"
 import {
   Modal,
   ModalOverlay,
@@ -26,8 +25,14 @@ interface ILogin {
   onOpen: () => void,
   onClose: () => void,
 }
+// let window.recaptchaVerifier: any
+// let confirmationResult: any
+// // let recaptchaWidgetId: any
 
-const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
+const LoginModal: React.FC<ILogin> =  ({ isOpen, onClose, onOpen }) => {
+
+
+  
 
   const [loading, setLoading] = useState<boolean>(false)
   const [otp, setotp] = useState('')
@@ -35,10 +40,14 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   const toast = useToast()
   const [number, setnumber] = useState('')
   const handleback = () => {
+    window.recaptchaVerifier.render().then(function(widgetId) {
+      grecaptcha.reset(widgetId);
+    });
     setstepnum(1)
   }
 
-  const handleClick = async () => { 
+  const handleClick = () => { 
+    console.log("number: ", number)
     if (!number) {
       toast({
         title: 'Empty field',
@@ -50,20 +59,35 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
       return
     }
 
-    if (number.length != 10) {
-      toast({
-        title: 'Invalid Number',
-        description: "Number length mismatch",
-        status: 'error',
-        duration: 6000,
-        isClosable: true,
-      })
-      return
-    }
+    // if (number.length != 10) {
+    //   toast({
+    //     title: 'Invalid Number',
+    //     description: "Check your entered phone number",
+    //     status: 'error',
+    //     duration: 6000,
+    //     isClosable: true,
+    //   })
+    //   return
+    // }
 
+    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container',{
+      'size': 'invisible',
+      'callback': (response) => {
+        console.log(response)
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        // ...
+      },
+      'expired-callback': () => {
+        // Response expired. Ask user to solve reCAPTCHA again.
+        // ...
+      }
+    
+    }, auth)
+    
   
     const appVerifier = window.recaptchaVerifier;
-    signInWithPhoneNumber(auth, number, appVerifier)
+    // signInWithPhoneNumber(auth, "+91 " + number, appVerifier)
+    signInWithPhoneNumber(auth,  number, appVerifier)
     .then((confirmationResult) => {
       // SMS sent. Prompt user to type the code from the message, then sign the
       // user in with confirmationResult.confirm(code).
@@ -72,6 +96,17 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
     }).catch((error) => {
       // Error; SMS not sent
       // ...
+      console.log("errror in sending otp: ", error)
+      window.recaptchaVerifier.render().then(function(widgetId) {
+        grecaptcha.reset(widgetId);
+      });
+      toast({
+        title: 'SMS NOT SENT',
+        description: "Check your network and try again",
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      })
     });
 
     setstepnum(2)
@@ -79,25 +114,53 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   useEffect(() => {
     setstepnum(1)
   }, [])
-  const handleverify = async () => {
-    window.confirmationResult.confirm(otp).then((result) => {
+  const handleverify =  () => {
+    console.log("verify...")
+    window.confirmationResult.confirm(otp).then( (result) => {
       // User signed in successfully.
-      const credential = PhoneAuthProvider.credential(window.confirmationResult.verificationId, otp)
-      signInWithCredential(credential)
+      console.log(auth.currentUser)
+
+// add logic to add user to collection user
+
+
+    // console.log("confirm check...")
+    //   console.log("result: ", result)
+    //   console.log("confirmation result verificationID: ", window.confirmationResult.verificationId)
+
+    //   const credential = PhoneAuthProvider.credential(window.confirmationResult.verificationId, otp)
+    //   signInWithCredential(auth,credential).then(()=>{
+    //     console.log("credential done logged in")
+    //   }).catch((error) => {
+    //     console.log("error in crendential", error)
+    //   })
       // ...
+
+      onClose()
+
     }).catch((error) => {
       // User couldn't sign in (bad verification code?)
       // ...
+      console.log("error confirmation, ", error)
+      window.recaptchaVerifier.render().then(function(widgetId) {
+        grecaptcha.reset(widgetId);
+      });
+      toast({
+        title: "Couldn't Sign in",
+        description: "Check your network and try again",
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      })
     });
   }
 
-  useEffect(() => {
-    // window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container',{}, auth)
+  // useEffect(() => {
+  //   recaptchaVerifier = new RecaptchaVerifier('recaptcha-container',{}, auth)
 
-    // window.recaptchaVerifier.render().then(widgetId => {
-    //   window.recaptchaWidgetId = widgetId
-    // })
-  }, [])  
+  //   // recaptchaVerifier.render().then(widgetId => {
+  //   //   recaptchaWidgetId = widgetId
+  //   // })
+  // }, [])  
 
 
 
@@ -107,15 +170,16 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
       <ModalContent>
         <ModalHeader>Modal Title</ModalHeader>
         <ModalCloseButton />
+        <div id="recaptcha-container" className="justify-center flex"></div>
+
         <ModalBody>
           {
             stepnum == 1
               ?
               <FormControl isRequired>
                 <FormLabel>Phone number</FormLabel>
-                <Input required id="phone" value={number} onChange={(e) => setnumber(e.target.value)} type='number' placeholder="Enter phone number" />
+                <Input required id="phone" value={number} onChange={(e) => setnumber(e.target.value)} type='text' placeholder="Enter phone number" />
                 <FormHelperText>We'll never share your phone number</FormHelperText>
-                <div id="recaptcha-container"></div>
               </FormControl>
               :
               <FormControl isRequired>
@@ -148,7 +212,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
             Close
           </Button>
           {
-            stepnum
+            stepnum == 1
               ?
               <Button colorScheme={"blue"} isLoading={loading} onClick={handleClick}>Submit</Button>
               :
