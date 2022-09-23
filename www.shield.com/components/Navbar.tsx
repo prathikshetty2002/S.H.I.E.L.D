@@ -18,6 +18,8 @@ import LoginModal from "./LoginModal"
 
 
 
+
+
 const Navbar: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { isOpen: isOpenmodal, onOpen: onOpenmodal, onClose: onClosemodal } = useDisclosure()
