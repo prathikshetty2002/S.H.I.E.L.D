@@ -30,6 +30,8 @@ import {
 } from '@chakra-ui/react'
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth"
 
+
+
 const Navbar: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { isOpen: isOpenmodal, onOpen: onOpenmodal, onClose: onClosemodal } = useDisclosure()
