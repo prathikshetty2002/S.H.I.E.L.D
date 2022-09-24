@@ -29,7 +29,7 @@ const Home: NextPage = () => {
       </Box >
       <Box bottom="5" left="5"  width="auto" display={"flex"} flexDir="column" zIndex="docked" position={"fixed"} >
         <Button onClick={() => router.push("/reportIncident")}  bg={"blackAlpha.800"} color="white" my="5" >Report Incident</Button>
-        <Button onClick={() => router.push("/sos")}  bg={"whiteAlpha.800"} >SoS Emergency</Button>
+        <Button onClick={() => router.push("/Sos")}  bg={"whiteAlpha.800"} >SoS Emergency</Button>
       </Box>
     </Box>
   )
