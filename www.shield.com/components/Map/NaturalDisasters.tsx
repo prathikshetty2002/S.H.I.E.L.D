@@ -1,19 +1,36 @@
 import { Box, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { CircleMarker } from 'react-leaflet/CircleMarker';
 import { Popup } from 'react-leaflet/Popup';
 
 
 const NaturalDisasters:React.FC = () => {
+    const [data, setData] = useState<any>([])
+    useEffect(() => {
+        console.log("process.env.PREDICTHQACCESSTOKEN: ", process.env.PREDICTHQACCESSTOKEN)
+        fetch("https://api.predicthq.com/v1/events/?category=terror%2Csevere-weather%2Cdisasters&country=IN&offset=10", {
+            headers: {
+                "Authorization": `Bearer ${'B45S2sJiPOTw9f81Id4PEC172eK9rJQT_Bypa1QP'}`,
+                "Accept": "application/json"
+            },
+}).then((res) => res.json()).then(data => {
+    console.log("natural disaster daaata",data)
+    setData(data.results)
+})
+// console.log("natural disaster daaata", daaata)
+
+},[])
+
     return (
         <>
         {
-            data.map(d => (
+            data?.map(d => (
                 <CircleMarker key={d.id} center={[d.location[1], d.location[0]]} pathOptions={{ color: 'red' }}  radius={25}>
               <Popup>
                 <Box>
                     <Text fontSize={"lg"} as="b" >{d.title}</Text> <br />
                     <Text fontSize={"md"} as="i" >{d.labels.join(", ")}</Text>
-                    <Text fontSize={"sm"} >{d.description}</Text>
+                    <Text fontSize={"sm"} noOfLines={10} >{d.description}</Text>
                 </Box>
               </Popup>
               </CircleMarker>
@@ -25,7 +42,7 @@ const NaturalDisasters:React.FC = () => {
 
 export default NaturalDisasters
 
-const data =[
+const dataaa =[
     {"relevance": 0,
           "id": "GWHR3KWL6GqXyXwFsz",
           "title": "Fire in built environment - Asia - India",
