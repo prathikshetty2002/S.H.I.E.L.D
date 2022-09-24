@@ -13,14 +13,15 @@
     "@chakra-ui/react": "^2.3.4",
     "@emotion/react": "11",
     "@emotion/styled": "11",
-    "@types/leaflet": "^1.8.0",
     "firebase": "^9.10.0",
     "framer-motion": "6",
-    "leaflet": "^1.9.0",
+    "leaflet": "^1.9.1",
     "next": "12.3.1",
+    "next-pwa": "^5.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-leaflet": "^4.0.2",
+    "react-stripe-checkout": "^2.6.3",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import L from 'leaflet';
 import * as ReactLeaflet from 'react-leaflet';
 import { useMap } from 'react-leaflet/hooks'
@@ -17,11 +17,16 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-const { MapContainer } = ReactLeaflet;
-const DEFAULT_CENTER = [51.54, -0.12]
+import { safeHouse } from './SafeHouse';
+import SafeSpots from './SafeSpots';
+import NaturalDisasters from './NaturalDisasters';
+import UserReports from './UserReports';
+import { mymarker } from './MyMarker';
 
-const data = [{"lat": 23.59, "lng": 85.56}, {"lat": 9.19, "lng": 92.77}, {"lat": -4.18, "lng": 37.83}, {"lat": 4.73, "lng": 11.1},{"lat": 5.49, "lng": 10.85}, {"lat": 1.4, "lng": 9.51}, {"lat": -10.61, "lng": 29.3}, {"lat": -9.27, "lng": 35.04}, {"lat": -6.22, "lng": 30.59}, {"lat": 1.5, "lng": 30.03}, {"lat": 1.17, "lng": 28.76}, {"lat": 1.71, "lng": 15.95}, {"lat": 2.2, "lng": 22.61}, {"lat": 0.679, "lng": 34.77}]
-const redOptions = { color: 'red' }
+const { MapContainer } = ReactLeaflet;
+const DEFAULT_CENTER = [77.07695,
+    28.83979]
+    
 
 const bounds = [
   [51.49, -0.08],
@@ -36,7 +41,16 @@ const myIcon = new L.Icon({
 const Map = ({ children, className, ...rest }) => {
   let mapClassName = styles.map;
   
+  const [geoLocation, setGeoLocation] = useState<any>(null)
 
+  useEffect(() => {
+      navigator.geolocation.getCurrentPosition(function (position) {
+          console.log("Latitude is :", position.coords.latitude);
+          console.log("Longitude is :", position.coords.longitude);
+          setGeoLocation([position.coords.latitude, position.coords.longitude])
+          // console.log("geoLocation: ", geoLocation)
+      });
+  }, [])
   if ( className ) {
     mapClassName = `${mapClassName} ${className}`;
   }
@@ -88,25 +102,16 @@ const Map = ({ children, className, ...rest }) => {
                 attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
               />
               
-              <Marker position={DEFAULT_CENTER}>
+              <SafeSpots />
+              <NaturalDisasters />
+              <UserReports />
+              {geoLocation && <Marker  position={[geoLocation[0], geoLocation[1]]}>
                 <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
+                  You are here
                 </Popup>
-              </Marker>
-              {data.map(d => (
-              <CircleMarker center={[d.lat, d.lng]} pathOptions={redOptions}  radius={20}>
-              <Popup>Popup in CircleMarker</Popup>
-              </CircleMarker>
+              </Marker>}
+              
 
-              ))}
-             <SVGOverlay attributes={{ stroke: 'red' }} bounds={bounds}>
-              <>
-             <svg xmlns="http://www.w3.org/2000/svg" fill="green" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-</svg>
-
-</>
-             </SVGOverlay>
       <MyComponent />
     </MapContainer>
   )

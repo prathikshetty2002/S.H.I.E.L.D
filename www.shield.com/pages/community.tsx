@@ -1,4 +1,4 @@
-import { Box, Button, Image, Input, useDisclosure, useToast } from '@chakra-ui/react'
+import { Box, Button, Image, Input, Text, useDisclosure, useToast } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import Navbar from '../components/Navbar'
 import { storage, firestore } from '../firebase'
@@ -15,6 +15,8 @@ import { useRef, useState } from 'react'
 import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { addDoc, collection } from '@firebase/firestore'
+import DisplayPosts from '../components/DisplayPosts'
+import {  AddIcon } from '@chakra-ui/icons'
 
 
 
@@ -88,11 +90,14 @@ const community: NextPage = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
-        <Box mt={"10vh"} >
+        <Box mt={"12vh"} p={4} >
             <Navbar />
             <Box my={"0vh"}>
-                <Box display={"flex"} w="full" justifyContent={"right"} p={2}>
-                    <Button onClick={onOpen} colorScheme={"blue"}>Add post</Button>
+            <Text as="b" mb={"2vw"}  display={"block"} fontSize={"3xl"}>Community</Text>
+
+                <Box display={"flex"} w="full" justifyContent={"right"} p={2}
+                position="fixed" bottom={20} left={0}>
+                    <Button onClick={onOpen} w={"40px"} h={"40px"} colorScheme={"blue"} borderRadius={"60%"} p={6}><AddIcon/></Button>
                 </Box>
 
                 <Box p={2} >
@@ -134,6 +139,8 @@ const community: NextPage = () => {
                 </Box>
 
             </Box>
+
+            <DisplayPosts/>
         </Box>
     )
 }
