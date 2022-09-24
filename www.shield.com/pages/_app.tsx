@@ -27,8 +27,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       const lng: number = geoLocation[1]
       if(user && lat && lng) {
         updateDoc(doc(firestore, "users", user.uid), {
-          lat: lat,
-          lng: lng
+          latitude: lat,
+          longitude: lng
         }).then(() => {
           console.log("update location done")
         }).catch((e) => {

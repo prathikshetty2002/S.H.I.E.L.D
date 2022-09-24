@@ -17,7 +17,7 @@ import {
   FormErrorMessage,
   FormHelperText,
 } from '@chakra-ui/react'
-import { collection, doc, getDocs, query, setDoc } from '@firebase/firestore'
+import { addDoc, collection, doc, getDoc, getDocs, query, setDoc } from '@firebase/firestore'
 import { RecaptchaVerifier, signInWithCredential, signInWithPhoneNumber, PhoneAuthProvider } from "firebase/auth"
 import { useEffect, useState } from 'react'
 import { auth, firestore } from '../firebase'
@@ -33,7 +33,17 @@ interface ILogin {
 const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
 
 
+  const [geoLocation, setGeoLocation] = useState<any>([])
 
+  useEffect(()=> {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log("Latitude is :", position.coords.latitude);
+      console.log("Longitude is :", position.coords.longitude);
+      setGeoLocation([position.coords.latitude, position.coords.longitude])
+      console.log("geoLocation: ", geoLocation)
+    });
+  
+  }, [])
 
   const [loading, setLoading] = useState<boolean>(false)
   const [otp, setotp] = useState('')
@@ -118,7 +128,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   }, [])
   const handleverify = () => {
     console.log("verify...")
-    window.confirmationResult.confirm(otp).then((result) => {
+    window.confirmationResult.confirm(otp).then(async (result) => {
       // User signed in successfully.
       console.log(auth.currentUser)
 
@@ -126,23 +136,25 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
       const uid = auth.currentUser?.uid
       const number = auth.currentUser?.phoneNumber
 
-
-
       try {
-        const docRef = doc(firestore, "users", uid?.toString());
+        
+
+        let flag = await giveflag(uid)
+
+        if (flag == false && uid) {
+          const docRef =  doc(firestore, "users", uid.toString());
         const data = {
           uid: uid,
-          number: number
+          number: number,
+          latitude: geoLocation[0] as number,
+          longitude: geoLocation[1] as number
         }
-
-        let flag = giveflag(uid)
-
-        if (flag == false) {
           setDoc(docRef, data)
             .then(docRef => {
               console.log("Data added");
             })
             .catch(error => {
+              console.log("couldnt add user to database")
               console.log(error.message);
             })
         }
@@ -197,16 +209,9 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   // }, [])  
 
   const giveflag = async (u) => {
-    const q = query(collection(firestore, "posts"));
-    const querySnapshot = await getDocs(q);
-    let flag = false
-
-    querySnapshot.forEach((doc) => {
-      if (doc.id == u) {
-        flag = true
-      }
-    })
-    return flag
+    const q = doc(firestore, "users",u);
+    const querySnapshot = await getDoc(q);
+    return querySnapshot.exists()
 
 
   }

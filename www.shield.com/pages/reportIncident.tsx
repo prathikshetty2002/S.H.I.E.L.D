@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react'
 import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from '@firebase/storage'
-import { firestore, storage } from '../firebase'
+import { auth, firestore, storage } from '../firebase'
 import { addDoc, collection, query, where, getDocs } from '@firebase/firestore'
 import {
     Modal,
@@ -20,21 +20,33 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-  } from '@chakra-ui/react'
+} from '@chakra-ui/react'
 import { useRouter } from 'next/router'
+import LoginModal from '../components/LoginModal'
+import { onAuthStateChanged } from '@firebase/auth'
 
 
 const reportIncident: NextPage = () => {
+    const { isOpen: isOpenmodal, onOpen: onOpenmodal, onClose: onClosemodal } = useDisclosure()
+
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+              onOpenmodal()
+            }
+          });
+    }, [])
 
     const { isOpen, onOpen, onClose } = useDisclosure()
-  const finalRef = React.useRef(null)
+    const finalRef = React.useRef(null)
 
     const toast = useToast()
     const [imgurl, setimgurl] = useState("")
     const [disp, setdisp] = useState("none")
     const [loading, setLoading] = useState(false)
     const hiddenFileInput = useRef(null)
-    const[submitloading,setsubmitloading] = useState(false)
+    const [submitloading, setsubmitloading] = useState(false)
     const handleClick = event => {
         hiddenFileInput.current.click();
     }
@@ -45,30 +57,16 @@ const reportIncident: NextPage = () => {
 
     const [geoLocation, setGeoLocation] = useState<any>([])
 
-  useEffect(()=> {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      console.log("Latitude is :", position.coords.latitude);
-      console.log("Longitude is :", position.coords.longitude);
-      setGeoLocation([position.coords.latitude, position.coords.longitude])
-      console.log("geoLocation: ", geoLocation)
-    });
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            console.log("Latitude is :", position.coords.latitude);
+            console.log("Longitude is :", position.coords.longitude);
+            setGeoLocation([position.coords.latitude, position.coords.longitude])
+            console.log("geoLocation: ", geoLocation)
+        });
+    }, [])
 
-    const processData = async () => {
-        const usersRef = collection(firestore, "users")
-        const lowerLatitude = geoLocation[0] - 0.02
-        const upperLatitude = geoLocation[0] + 0.02
-        // const lowerLongitude = geoLocation[1] - 0.02
-        // const upperLongitude = geoLocation[1] + 0.02
-        const lowerLatitudeUsersRef = query(usersRef, where("latitude", '>', lowerLatitude))
-        const upperLatitudeUsersRef = query(usersRef, where("latitude", '<', upperLatitude))
-        const lowerLatitudeUsers = await getDocs(lowerLatitudeUsersRef)
-        const upperLatitudeUsers = await getDocs(upperLatitudeUsersRef)
-        console.log("lower latitude, ",lowerLatitudeUsers )
-        console.log("upper latitude, ", upperLatitudeUsers)
-        
-    }
-    processData()
-  }, [])
+
 
     const handleChange = async (event) => {
         setLoading(true)
@@ -87,6 +85,19 @@ const reportIncident: NextPage = () => {
     }
 
     const submithandler = async () => {
+
+        if(!auth.currentUser) {
+            toast({
+                title: "Sign in to continue",
+        description: "You must sign in to get your rewards for reporting",
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+            })
+            onOpenmodal()
+            return
+        }
+
         setsubmitloading(true)
         const dbRef = collection(firestore, "reportincident");
         const data = {
@@ -94,7 +105,7 @@ const reportIncident: NextPage = () => {
             description: description,
             imgurl: imgurl,
             latitude: geoLocation[0] as number,
-          longitude: geoLocation[1] as number
+            longitude: geoLocation[1] as number
         };
         await addDoc(dbRef, data)
             .then(docRef => {
@@ -105,19 +116,84 @@ const reportIncident: NextPage = () => {
                 console.log(error);
                 setsubmitloading(false)
             })
+            console.log("report added in database")
+        const usersRef = collection(firestore, "users")
+        const lowerLatitude = await getDocs(query(usersRef, where("latitude", '>', geoLocation[0] - 0.02)))
+        const upperLatitude = await getDocs(query(usersRef, where("latitude", '<', geoLocation[0] + 0.02)))
+        const lowerLongitude = await getDocs(query(usersRef, where("latitude", '>', geoLocation[1] - 0.02)))
+        const upperLongitude = await getDocs(query(usersRef, where("latitude", '<', geoLocation[1] + 0.02)))
+        // console.log("lower latitude, ",lowerLatitude )
+        // console.log("upper latitude, ", upperLatitude)
+        console.log("users queried")
+        const usersData = new Set()
+        lowerLatitude.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+            usersData.add({
+                id: doc.id,
+                ...doc.data()
+            })
+        });
+        upperLatitude.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+            usersData.add({
+                id: doc.id,
+                ...doc.data()
+            })
+        });
+        lowerLongitude.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+            usersData.add({
+                id: doc.id,
+                ...doc.data()
+            })
+        });
+        upperLongitude.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+            usersData.add({
+                id: doc.id,
+                ...doc.data()
+            })
+        });
+        const phoneList = new Set()
+        usersData.forEach(p => {
+            phoneList.add(p.number)
+            if (p.number1) phoneList.add(p.number1)
+            if (p.number2) phoneList.add(p.number2)
+            if (p.number3) phoneList.add(p.number3)
+        })
+        phoneList.forEach(p => {
+            if(p == auth.currentUser!.phoneNumber) {
+                usersData.delete(p)
+            }
+        })
+        
+        console.log("phone number list ready: ", phoneList)
+        phoneList.forEach(async p => {
+            await addDoc(collection(firestore, "alertUsers"), {
+                to: p,
+                body: 
+                `ALERT! ALERT!! ALERT!!!
+                ${type}
+                ${description}
 
-        // const usersRef = collection(firestore, "users")
-        // const lowerLatitude = geoLocation[0] - 0.02
-        // const upperLatitude = geoLocation[0] + 0.02
-        // // const lowerLongitude = geoLocation[1] - 0.02
-        // // const upperLongitude = geoLocation[1] + 0.02
-        // const lowerLatitudeUsers = query(usersRef, where("location[0]", '>', lowerLatitude))
-        // const upperLatitudeUsers = query(usersRef, where("location[0]", '<', upperLatitude))
-        // console.log("lower latitude, ", lowerLatitudeUsers)
-        // console.log("upper latitude, ", upperLatitudeUsers)
+                ${auth.currentUser?.displayName ? `Reported By: ${auth.currentUser.displayName} ` : "" }
+
+                SENT BY SHIELD, CO
+                Here for you, always.
+                Be safe & take care 
+                `,
+                from: "+1 574 347 4780"
+            })
+        })
+        console.log("all sms have been sent")
+        setsubmitloading(false)
     }
 
-    const handleClose = ()=>{
+    const handleClose = () => {
         router.push("/")
         onClose()
     }
@@ -125,8 +201,12 @@ const reportIncident: NextPage = () => {
 
     return (
         <Box>
+            <LoginModal isOpen={isOpenmodal} onClose={onClosemodal} onOpen={onOpenmodal} />
+
             <Navbar />
-            <VStack mt={"12vh"}>
+            <Box mt={"20vw"} p={"4"}>
+            <Text as="b" mt={"4vw"} display={"block"}  fontSize={"3xl"}>Report Incident</Text>
+            <VStack mt={"2vh"}>
                 <FormControl w="90%">
                     <FormLabel>Select type</FormLabel>
                     <Select onChange={(e) => settype(e.target.value)} placeholder='Select option'>
@@ -138,7 +218,7 @@ const reportIncident: NextPage = () => {
                 </FormControl>
 
                 <FormControl w="90%">
-                    <FormLabel>Email address</FormLabel>
+                    <FormLabel>Description</FormLabel>
                     <Textarea
                         placeholder='Enter description'
                         size='sm'
@@ -164,23 +244,23 @@ const reportIncident: NextPage = () => {
                 </Box>
 
             </VStack>
-
+            </Box>
             <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Report Submitted</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>Your report is submitted , thank you for reporting. We will take an imediate action on this problem and you will receive reward for your work in near future!</Text>
-              </ModalBody>
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={handleClose}>
-              Okay
-            </Button>
-            
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Report Submitted</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Your report is submitted , thank you for reporting. We will take an imediate action on this problem and you will receive reward for your work in near future!</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme='blue' mr={3} onClick={handleClose}>
+                            Okay
+                        </Button>
+
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
 
         </Box>
 
