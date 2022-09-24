@@ -118,10 +118,10 @@ const donations: NextPage = () => {
                                         <Box>
                                             <StripeCheckout
                                                 label='Pay'
-                                                name='Freaky Jolly Co.'
+                                                name='S.H.I.E.L.D'
                                                 billingAddress
                                                 shippingAddress
-                                                image='https://www.freakyjolly.com/wp-content/uploads/2020/04/fj-logo.png'
+                                                image='https://img.favpng.com/6/24/2/payment-computer-icons-money-logo-png-favpng-mb8H8Lt49yNLgQG8QZhQ6SNRv.jpg'
                                                 description={`Donation to S.H.I.E.L.D`}
                                                 amount={priceForStripe}
                                                 panelLabel='Pay'

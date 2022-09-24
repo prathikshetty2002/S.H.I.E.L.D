@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Navbar from '../components/Navbar'
-import { Box, Button, Img, Input, Select, Textarea, VStack, useToast, useDisclosure, Text } from '@chakra-ui/react'
+import { Box, Button, Img, Input, Select, Textarea, VStack, useToast, useDisclosure, Text, Heading } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from '@firebase/storage'
 import { auth, firestore, storage } from '../firebase'
-import { addDoc, collection, query, where, getDocs } from '@firebase/firestore'
+import { addDoc, collection, query, where, getDocs,doc,getDoc , updateDoc } from '@firebase/firestore'
 import {
     Modal,
     ModalOverlay,
@@ -78,6 +78,12 @@ const reportIncident: NextPage = () => {
             const link = await getDownloadURL(imageref)
             setimgurl(link)
             setdisp("block")
+
+
+
+
+
+
         } catch (err) {
             console.log(err.message)
         }
@@ -85,6 +91,16 @@ const reportIncident: NextPage = () => {
     }
 
     const submithandler = async () => {
+<<<<<<< HEAD
+        if(!type || !description ){
+            toast({
+                title: 'Error',
+                description: "Description and type is necessary",
+                status: 'error',
+                duration: 6000,
+                isClosable: true,
+            })
+=======
 
         if(!auth.currentUser) {
             toast({
@@ -95,6 +111,7 @@ const reportIncident: NextPage = () => {
         isClosable: true,
             })
             onOpenmodal()
+>>>>>>> 5065185ae1576e9d49151169b5d29fd73e94ee54
             return
         }
 
@@ -104,8 +121,13 @@ const reportIncident: NextPage = () => {
             type: type,
             description: description,
             imgurl: imgurl,
+<<<<<<< HEAD
+        //     latitude: geoLocation[0] as number,
+        //   longitude: geoLocation[1] as number
+=======
             latitude: geoLocation[0] as number,
             longitude: geoLocation[1] as number
+>>>>>>> 5065185ae1576e9d49151169b5d29fd73e94ee54
         };
         await addDoc(dbRef, data)
             .then(docRef => {
@@ -180,6 +202,47 @@ const reportIncident: NextPage = () => {
                 ${type}
                 ${description}
 
+<<<<<<< HEAD
+            // credits assign
+            const uid = auth.currentUser.uid
+            const docRef = doc(firestore, "users",uid );
+            const docSnap = await getDoc(docRef);
+            let dataobj = {}
+            if(docSnap.data()["credits"]){
+                dataobj = {
+                    credits :  docSnap.data()["credits"] + 5
+                }
+            }
+            else{
+                dataobj = {
+                    credits : 5
+                }
+            }
+
+            updateDoc(docRef, dataobj)
+            .then(docRef => {
+                console.log("done")
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+            
+
+
+
+            
+
+        // const usersRef = collection(firestore, "users")
+        // const lowerLatitude = geoLocation[0] - 0.02
+        // const upperLatitude = geoLocation[0] + 0.02
+        // // const lowerLongitude = geoLocation[1] - 0.02
+        // // const upperLongitude = geoLocation[1] + 0.02
+        // const lowerLatitudeUsers = query(usersRef, where("location[0]", '>', lowerLatitude))
+        // const upperLatitudeUsers = query(usersRef, where("location[0]", '<', upperLatitude))
+        // console.log("lower latitude, ", lowerLatitudeUsers)
+        // console.log("upper latitude, ", upperLatitudeUsers)
+=======
                 ${auth.currentUser?.displayName ? `Reported By: ${auth.currentUser.displayName} ` : "" }
 
                 SENT BY SHIELD, CO
@@ -191,6 +254,7 @@ const reportIncident: NextPage = () => {
         })
         console.log("all sms have been sent")
         setsubmitloading(false)
+>>>>>>> 5065185ae1576e9d49151169b5d29fd73e94ee54
     }
 
     const handleClose = () => {
@@ -246,6 +310,24 @@ const reportIncident: NextPage = () => {
             </VStack>
             </Box>
             <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+<<<<<<< HEAD
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Report Submitted</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Heading>You earn 5 credits</Heading>
+            <Text>Your report is submitted , thank you for reporting. We will take an imediate action on this problem and you will receive reward for your work in near future!</Text>
+              </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={handleClose}>
+              Okay
+            </Button>
+            
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+=======
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Report Submitted</ModalHeader>
@@ -261,6 +343,7 @@ const reportIncident: NextPage = () => {
                     </ModalFooter>
                 </ModalContent>
             </Modal>
+>>>>>>> 5065185ae1576e9d49151169b5d29fd73e94ee54
 
         </Box>
 
