@@ -90,18 +90,24 @@ const Home: NextPage = () => {
                 const uid = auth.currentUser!.uid
                 const docRef = doc(firestore, "users", uid?.toString());
 
-                const data = {
-                    name: name,
-                    age: age,
-                    gender: gender,
-                    number1: number1,
-                    number2: number2,
-                    number3: number3
-                }
+                let data: any = {}
+
+                if(name) data.name = name
+                if(age) data.age = age
+                if(number1) data.number1 = "+91"+number1 
+                if(number2) data.number2 = "+91"+number2 
+                if(number3) data.number3 = "+91"+number3 
+
 
                 updateDoc(docRef, data)
                     .then(docRef => {
                         console.log("done")
+                        toast({
+                            title: "Profile updated",
+                            status: 'success',
+                            duration: 6000,
+                            isClosable: true,
+                        })
                     })
                     .catch(error => {
                         console.log(error);
@@ -132,7 +138,9 @@ const Home: NextPage = () => {
             <LoginModal isOpen={isOpenmodal} onClose={onClosemodal} onOpen={onOpenmodal} />
 
             <Navbar />
-            <Box mt={"12vh"} p={3}>
+            <Box mt={"10vh"} p={"4"}>
+            <Text as="b" mb={"2vw"} mt={"4vw"} display={"block"} fontSize={"3xl"}>Profile</Text>
+                
                 <VStack spacing={"2.5vh"}>
                     <FormControl>
                         <FormLabel>Name:</FormLabel>
@@ -152,21 +160,21 @@ const Home: NextPage = () => {
                         </FormControl>
                     </HStack>
                     <FormControl>
-                        <FormLabel>Number 1:</FormLabel>
+                        <FormLabel>Emergency Contact 1:</FormLabel>
                         <Input value={number1} p="20px" onChange={(e) => setnumber1(e.target.value)} placeholder='enter first number' />
                     </FormControl>
                     <FormControl>
-                        <FormLabel>Number 2:</FormLabel>
+                        <FormLabel>Emergency Contact 2:</FormLabel>
                         <Input value={number2} p="20px" onChange={(e) => setnumber2(e.target.value)} placeholder='enter second number' />
                     </FormControl>
                     <FormControl>
-                        <FormLabel>Number 3:</FormLabel>
+                        <FormLabel>Emergency Contact 3:</FormLabel>
                         <Input value={number3} p="20px" onChange={(e) => setnumber3(e.target.value)} placeholder='enter third number' />
                     </FormControl>
                     <Box>
-                        <Text fontWeight={"semibold"} fontSize="20px"> Your Credits : {credits && credits} credits</Text>
+                        <Text fontWeight={"semibold"} fontSize="20px"> Your Credits : {credits ? credits + " credits" : "No Credits"}</Text>
                     </Box>
-                    <Button isLoading={loading} onClick={handleClick} bg="blue" w="95%" textColor="white">Update Details</Button>
+                    <Button isLoading={loading} onClick={handleClick} bg="blackAlpha.800" w="95%" textColor="white">Update Details</Button>
                 </VStack>
             </Box>
         </Box>

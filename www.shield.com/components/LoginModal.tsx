@@ -98,8 +98,8 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
 
 
     const appVerifier = window.recaptchaVerifier;
-    // signInWithPhoneNumber(auth, "+91 " + number, appVerifier)
-    signInWithPhoneNumber(auth, number, appVerifier)
+    signInWithPhoneNumber(auth, "+91 " + number, appVerifier)
+    // signInWithPhoneNumber(auth, number, appVerifier)
       .then((confirmationResult) => {
         // SMS sent. Prompt user to type the code from the message, then sign the
         // user in with confirmationResult.confirm(code).
@@ -221,7 +221,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Modal Title</ModalHeader>
+        <ModalHeader>Login</ModalHeader>
         <ModalCloseButton />
         <div id="recaptcha-container" className="justify-center flex"></div>
 

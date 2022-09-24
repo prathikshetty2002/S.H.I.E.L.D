@@ -36,10 +36,12 @@ const Sos: NextPage = () => {
 
     }
     return (
-        <Box>
+        <Box p={4} >
             <Navbar />
-            <Box>
+            <Box mt="14vh" >
+            <Text as="b" mb={"2vw"}  display={"block"} fontSize={"3xl"}>Profile</Text>
             <Box mt={"12vh"} p={2} display="flex" justifyContent={"center"}>
+              
                 <Select onChange={(e)=>setinputval(e.target.value)} w="80%" placeholder='Select option'>
                     <option value='1'>Fire</option>
                     <option value='2'>Accident</option>

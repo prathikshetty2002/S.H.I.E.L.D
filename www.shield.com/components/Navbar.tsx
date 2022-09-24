@@ -94,12 +94,12 @@ const Navbar: React.FC = () => {
     return (
         <>
 
-            <Box px={6} py={2}  zIndex="docked" rounded={"2xl"} alignItems="center" w="96"  bg={"blackAlpha.800"}
-             display="flex"  shadow="2xl"  position="fixed" left="2" top="5" justifyContent={"space-between"} >
+            <Box px={6} py={2}  zIndex="docked" rounded={"2xl"} alignItems="centepr" w="96"  bg={"blackAlpha.800"}
+             display="flex"  shadow="2xl"  position="fixed" left="2" top="5" placeItems={"center"} justifyContent={"space-between"} >
                 <Box  >
                     <Heading fontSize={"20px"} color="white" >S.H.I.E.L.D</Heading>
                 </Box>
-                <Button bg="teal.200" onClick={onOpen} ref={btnRef} display={"flex"}>
+                <Button bg="whiteAlpha.800" onClick={onOpen} ref={btnRef} display={"flex"}>
                     <HamburgerIcon h={7} w={7} />
                 </Button>
 
@@ -109,9 +109,10 @@ const Navbar: React.FC = () => {
                 placement='right'
                 onClose={onClose}
                 finalFocusRef={btnRef}
+                
             >
                 <DrawerOverlay />
-                <DrawerContent>
+                <DrawerContent bg="whiteAlpha.800" >
                     <DrawerCloseButton />
                     <DrawerHeader>S.H.I.E.L.D</DrawerHeader>
 
@@ -119,7 +120,7 @@ const Navbar: React.FC = () => {
                         <VStack w="full" >
                             <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push('/')}>Home</Text></Box>
                             <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push("/profile")}>Profile</Text></Box>
-                            <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push("/Sos")}>Save our souls</Text></Box>
+                            <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push("/Sos")}>Save our souls (SoS)</Text></Box>
                             <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push('/reportIncident')}>Report Incident</Text></Box>
                             <Box w="full" p={2} onClick={handleCommunity}><Text fontSize={"18px"}>Community</Text></Box>
                             <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push('/safespot')}>Explore Safe spot</Text></Box>
@@ -132,9 +133,9 @@ const Navbar: React.FC = () => {
                     <DrawerFooter>
                         {
                             !user ? 
-                            <Button onClick={onOpenmodal} bg="blue" color={"white"} w="full" fontSize={"18px"}> Login</Button>
+                            <Button onClick={onOpenmodal} bg="blackAlpha.800" color={"white"} w="full" fontSize={"18px"}> Login</Button>
                             :
-                            <Button onClick={handleSignout} bg="blue" color={"white"} w="full" fontSize={"18px"}> Logout</Button>
+                            <Button onClick={handleSignout} bg="blackAlpha.800" color={"white"} w="full" fontSize={"18px"}> Logout</Button>
                         }
                     </DrawerFooter>
                 </DrawerContent>

@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from '@firebase/storage'
 import { auth, firestore, storage } from '../firebase'
-import { addDoc, collection, query, where, getDocs,doc,getDoc , updateDoc } from '@firebase/firestore'
+import { addDoc, collection, query, where, getDocs, doc, getDoc, updateDoc } from '@firebase/firestore'
 import {
     Modal,
     ModalOverlay,
@@ -26,16 +26,16 @@ import LoginModal from '../components/LoginModal'
 import { onAuthStateChanged } from '@firebase/auth'
 
 
-const reportIncident: NextPage = () => {
+const ReportIncident: NextPage = () => {
     const { isOpen: isOpenmodal, onOpen: onOpenmodal, onClose: onClosemodal } = useDisclosure()
 
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (!user) {
-              onOpenmodal()
+                onOpenmodal()
             }
-          });
+        });
     }, [])
 
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -91,8 +91,19 @@ const reportIncident: NextPage = () => {
     }
 
     const submithandler = async () => {
-<<<<<<< HEAD
-        if(!type || !description ){
+        if (!auth.currentUser) {
+            toast({
+                title: "Sign in to continue",
+                description: "You must sign in to get your rewards for reporting",
+                status: 'error',
+                duration: 6000,
+                isClosable: true,
+            })
+            onOpenmodal()
+            return
+        }
+
+        if (!type || !description) {
             toast({
                 title: 'Error',
                 description: "Description and type is necessary",
@@ -100,34 +111,16 @@ const reportIncident: NextPage = () => {
                 duration: 6000,
                 isClosable: true,
             })
-=======
-
-        if(!auth.currentUser) {
-            toast({
-                title: "Sign in to continue",
-        description: "You must sign in to get your rewards for reporting",
-        status: 'error',
-        duration: 6000,
-        isClosable: true,
-            })
-            onOpenmodal()
->>>>>>> 5065185ae1576e9d49151169b5d29fd73e94ee54
             return
         }
-
         setsubmitloading(true)
         const dbRef = collection(firestore, "reportincident");
         const data = {
             type: type,
             description: description,
             imgurl: imgurl,
-<<<<<<< HEAD
-        //     latitude: geoLocation[0] as number,
-        //   longitude: geoLocation[1] as number
-=======
             latitude: geoLocation[0] as number,
             longitude: geoLocation[1] as number
->>>>>>> 5065185ae1576e9d49151169b5d29fd73e94ee54
         };
         await addDoc(dbRef, data)
             .then(docRef => {
@@ -138,7 +131,34 @@ const reportIncident: NextPage = () => {
                 console.log(error);
                 setsubmitloading(false)
             })
-            console.log("report added in database")
+        console.log("report added in database")
+
+        // credits assign
+        const uid = auth.currentUser.uid
+        const docRef = doc(firestore, "users", uid);
+        const docSnap = await getDoc(docRef);
+        let dataobj = {}
+        if (docSnap.data()["credits"]) {
+            dataobj = {
+                credits: docSnap.data()["credits"] + 5
+            }
+        }
+        else {
+            dataobj = {
+                credits: 5
+            }
+        }
+
+        updateDoc(docRef, dataobj)
+            .then(docRef => {
+                console.log("done")
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+        console.log("credits assigned")
+
         const usersRef = collection(firestore, "users")
         const lowerLatitude = await getDocs(query(usersRef, where("latitude", '>', geoLocation[0] - 0.02)))
         const upperLatitude = await getDocs(query(usersRef, where("latitude", '<', geoLocation[0] + 0.02)))
@@ -188,62 +208,20 @@ const reportIncident: NextPage = () => {
             if (p.number3) phoneList.add(p.number3)
         })
         phoneList.forEach(p => {
-            if(p == auth.currentUser!.phoneNumber) {
+            if (p == auth.currentUser!.phoneNumber) {
                 usersData.delete(p)
             }
         })
-        
+
         console.log("phone number list ready: ", phoneList)
         phoneList.forEach(async p => {
             await addDoc(collection(firestore, "alertUsers"), {
                 to: p,
-                body: 
-                `ALERT! ALERT!! ALERT!!!
+                body:
+                    `ALERT! ALERT!! ALERT!!!
                 ${type}
                 ${description}
-
-<<<<<<< HEAD
-            // credits assign
-            const uid = auth.currentUser.uid
-            const docRef = doc(firestore, "users",uid );
-            const docSnap = await getDoc(docRef);
-            let dataobj = {}
-            if(docSnap.data()["credits"]){
-                dataobj = {
-                    credits :  docSnap.data()["credits"] + 5
-                }
-            }
-            else{
-                dataobj = {
-                    credits : 5
-                }
-            }
-
-            updateDoc(docRef, dataobj)
-            .then(docRef => {
-                console.log("done")
-            })
-            .catch(error => {
-                console.log(error);
-            })
-
-            
-
-
-
-            
-
-        // const usersRef = collection(firestore, "users")
-        // const lowerLatitude = geoLocation[0] - 0.02
-        // const upperLatitude = geoLocation[0] + 0.02
-        // // const lowerLongitude = geoLocation[1] - 0.02
-        // // const upperLongitude = geoLocation[1] + 0.02
-        // const lowerLatitudeUsers = query(usersRef, where("location[0]", '>', lowerLatitude))
-        // const upperLatitudeUsers = query(usersRef, where("location[0]", '<', upperLatitude))
-        // console.log("lower latitude, ", lowerLatitudeUsers)
-        // console.log("upper latitude, ", upperLatitudeUsers)
-=======
-                ${auth.currentUser?.displayName ? `Reported By: ${auth.currentUser.displayName} ` : "" }
+                ${auth.currentUser?.displayName ? `Reported By: ${auth.currentUser.displayName} ` : ""}
 
                 SENT BY SHIELD, CO
                 Here for you, always.
@@ -254,7 +232,6 @@ const reportIncident: NextPage = () => {
         })
         console.log("all sms have been sent")
         setsubmitloading(false)
->>>>>>> 5065185ae1576e9d49151169b5d29fd73e94ee54
     }
 
     const handleClose = () => {
@@ -269,70 +246,53 @@ const reportIncident: NextPage = () => {
 
             <Navbar />
             <Box mt={"20vw"} p={"4"}>
-            <Text as="b" mt={"4vw"} display={"block"}  fontSize={"3xl"}>Report Incident</Text>
-            <VStack mt={"2vh"}>
-                <FormControl w="90%">
-                    <FormLabel>Select type</FormLabel>
-                    <Select onChange={(e) => settype(e.target.value)} placeholder='Select option'>
-                        <option value='Fire'>Fire</option>
-                        <option value='Accident'>Accident</option>
-                        <option value='Medical Emergency'>Medical Emergency</option>
-                        <option value='Crime'>Crime</option>
-                    </Select>
-                </FormControl>
+                <Text as="b" mt={"4vw"} display={"block"} fontSize={"3xl"}>Report Incident</Text>
+                <VStack mt={"2vh"}>
+                    <FormControl w="90%">
+                        <FormLabel>Select type</FormLabel>
+                        <Select onChange={(e) => settype(e.target.value)} placeholder='Select option'>
+                            <option value='Fire'>Fire</option>
+                            <option value='Accident'>Accident</option>
+                            <option value='Medical Emergency'>Medical Emergency</option>
+                            <option value='Crime'>Crime</option>
+                        </Select>
+                    </FormControl>
 
-                <FormControl w="90%">
-                    <FormLabel>Description</FormLabel>
-                    <Textarea
-                        placeholder='Enter description'
-                        size='sm'
-                        resize={"none"}
-                        onChange={(e) => setdescription(e.target.value)}
-                    />
-                </FormControl>
+                    <FormControl w="90%">
+                        <FormLabel>Description</FormLabel>
+                        <Textarea
+                            placeholder='Enter description'
+                            size='sm'
+                            resize={"none"}
+                            onChange={(e) => setdescription(e.target.value)}
+                        />
+                    </FormControl>
 
-                <FormControl w="90%" >
-                    <FormLabel>Select Image (optional):</FormLabel>
-                    <Button isLoading={loading} w="full" _hover={{ bg: "green" }} onClick={handleClick} bg="green" mt="2vh" textColor={"white"} cursor="pointer" borderRadius={"10px"} fontSize={"16px"} textAlign={"center"} htmlFor='inp'>
-                        Upload Images
-                        <Input onChange={handleChange} ref={hiddenFileInput} display={"none"} id="inp" type="file" />
-                    </Button>
-                </FormControl>
+                    <FormControl w="90%" >
+                        <FormLabel>Select Image (optional):</FormLabel>
+                        <Button isLoading={loading} w="full" _hover={{ bg: "green" }} onClick={handleClick} bg="green" mt="2vh" textColor={"white"} cursor="pointer" borderRadius={"10px"} fontSize={"16px"} textAlign={"center"} htmlFor='inp'>
+                            Upload Images
+                            <Input onChange={handleChange} ref={hiddenFileInput} display={"none"} id="inp" type="file" />
+                        </Button>
+                    </FormControl>
 
-                <Box w="90%" h="30vh" p={2} display={disp}>
-                    <Img borderRadius={"10px"} h="full" w="full" src={imgurl} />
-                </Box>
+                    <Box w="90%" h="30vh" p={2} display={disp}>
+                        <Img borderRadius={"10px"} h="full" w="full" src={imgurl} />
+                    </Box>
 
-                <Box mt="2vh" w="90%">
-                    <Button isLoading={submitloading} onClick={submithandler} borderRadius={"10px"} w="full" bg="blue" textColor={"white"}>Submit Details</Button>
-                </Box>
+                    <Box mt="2vh" w="90%">
+                        <Button isLoading={submitloading} onClick={submithandler} borderRadius={"10px"} w="full" bg="blue" textColor={"white"}>Submit Details</Button>
+                    </Box>
 
-            </VStack>
+                </VStack>
             </Box>
             <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
-<<<<<<< HEAD
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Report Submitted</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Heading>You earn 5 credits</Heading>
-            <Text>Your report is submitted , thank you for reporting. We will take an imediate action on this problem and you will receive reward for your work in near future!</Text>
-              </ModalBody>
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={handleClose}>
-              Okay
-            </Button>
-            
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-=======
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Report Submitted</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
+                        <Heading>You earn 5 credits</Heading>
                         <Text>Your report is submitted , thank you for reporting. We will take an imediate action on this problem and you will receive reward for your work in near future!</Text>
                     </ModalBody>
                     <ModalFooter>
@@ -343,11 +303,11 @@ const reportIncident: NextPage = () => {
                     </ModalFooter>
                 </ModalContent>
             </Modal>
->>>>>>> 5065185ae1576e9d49151169b5d29fd73e94ee54
 
         </Box>
 
     )
-}
 
-export default reportIncident
+
+}
+export default ReportIncident
