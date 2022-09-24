@@ -39,7 +39,7 @@ const Sos: NextPage = () => {
         <Box p={4} >
             <Navbar />
             <Box mt="14vh" >
-            <Text as="b" mb={"2vw"}  display={"block"} fontSize={"3xl"}>Profile</Text>
+            <Text as="b" mb={"2vw"}  display={"block"} fontSize={"3xl"}>Save Our Souls</Text>
             <Box mt={"12vh"} p={2} display="flex" justifyContent={"center"}>
               
                 <Select onChange={(e)=>setinputval(e.target.value)} w="80%" placeholder='Select option'>
