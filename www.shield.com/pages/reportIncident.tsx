@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Navbar from '../components/Navbar'
-import { Box, Button, Img, Input, Select, Textarea, VStack, useToast, useDisclosure, Text } from '@chakra-ui/react'
+import { Box, Button, Img, Input, Select, Textarea, VStack, useToast, useDisclosure, Text, Heading } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
@@ -10,8 +10,8 @@ import {
 import React, { useEffect, useRef, useState } from 'react'
 import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from '@firebase/storage'
-import { firestore, storage } from '../firebase'
-import { addDoc, collection, query, where, getDocs } from '@firebase/firestore'
+import { auth, firestore, storage } from '../firebase'
+import { addDoc, collection, query, where, getDocs,doc,getDoc , updateDoc } from '@firebase/firestore'
 import {
     Modal,
     ModalOverlay,
@@ -80,6 +80,12 @@ const reportIncident: NextPage = () => {
             const link = await getDownloadURL(imageref)
             setimgurl(link)
             setdisp("block")
+
+
+
+
+
+
         } catch (err) {
             console.log(err.message)
         }
@@ -87,14 +93,25 @@ const reportIncident: NextPage = () => {
     }
 
     const submithandler = async () => {
+        if(!type || !description ){
+            toast({
+                title: 'Error',
+                description: "Description and type is necessary",
+                status: 'error',
+                duration: 6000,
+                isClosable: true,
+            })
+            return
+        }
+
         setsubmitloading(true)
         const dbRef = collection(firestore, "reportincident");
         const data = {
             type: type,
             description: description,
             imgurl: imgurl,
-            latitude: geoLocation[0] as number,
-          longitude: geoLocation[1] as number
+        //     latitude: geoLocation[0] as number,
+        //   longitude: geoLocation[1] as number
         };
         await addDoc(dbRef, data)
             .then(docRef => {
@@ -105,6 +122,36 @@ const reportIncident: NextPage = () => {
                 console.log(error);
                 setsubmitloading(false)
             })
+
+            // credits assign
+            const uid = auth.currentUser.uid
+            const docRef = doc(firestore, "users",uid );
+            const docSnap = await getDoc(docRef);
+            let dataobj = {}
+            if(docSnap.data()["credits"]){
+                dataobj = {
+                    credits :  docSnap.data()["credits"] + 5
+                }
+            }
+            else{
+                dataobj = {
+                    credits : 5
+                }
+            }
+
+            updateDoc(docRef, dataobj)
+            .then(docRef => {
+                console.log("done")
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
+            
+
+
+
+            
 
         // const usersRef = collection(firestore, "users")
         // const lowerLatitude = geoLocation[0] - 0.02
@@ -171,6 +218,7 @@ const reportIncident: NextPage = () => {
           <ModalHeader>Report Submitted</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+            <Heading>You earn 5 credits</Heading>
             <Text>Your report is submitted , thank you for reporting. We will take an imediate action on this problem and you will receive reward for your work in near future!</Text>
               </ModalBody>
           <ModalFooter>
