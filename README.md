@@ -36,7 +36,12 @@ S.H.I.E.L.D provides a community which helps other by sharing/reporting the unce
 
 The main motive of S.H.I.E.L.D is to make an environment which helps the user and also make it aware about the situations and also about how to deal with that.
 
+## Snapshots
 
+
+| Home page  | Live report | 
+|------------|-------------|
+| <img src="imgs/home.png" width="250"> | <img src="imgs/livereport.png" width="250"> |
 
 
 ## Instructions on running project locally:
