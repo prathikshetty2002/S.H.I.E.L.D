@@ -2,6 +2,7 @@ import { Box, Button, Container, Heading, Input, Progress, Text, Textarea, useDi
 import type { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
+import StripeCheckout from 'react-stripe-checkout';
 import {
     Modal,
     ModalOverlay,
@@ -81,12 +82,21 @@ const donations: NextPage = () => {
         }
     }
 
+    const priceForStripe = 100;
+    const publishableKey = 'pk_test_51LlLhwSAMKxu09dqIatxe6iq2o9s6chjt7yn8siJraECP69y8kAreyWg0dKzEw2BtwutAW0jRvaE9TDzAM6lFzBf003M8dE490';
+
+    const onToken = token => {
+        console.log(token);
+        alert('Payment Succesful!');
+    };
+
     return (
         <Box>
 
             <Navbar />
             <Box p={3} mt="12vh" display={"flex"} justifyContent="right">
                 <Button onClick={onOpen} >Ask For donation</Button>
+
             </Box>
 
             <VStack>
@@ -106,13 +116,24 @@ const donations: NextPage = () => {
                                             </Box>
                                         </Box>
                                         <Box>
-                                            <Button colorScheme={"blue"}>Pay</Button>
+                                            <StripeCheckout
+                                                label='Pay'
+                                                name='Freaky Jolly Co.'
+                                                billingAddress
+                                                shippingAddress
+                                                image='https://www.freakyjolly.com/wp-content/uploads/2020/04/fj-logo.png'
+                                                description={`Donation to S.H.I.E.L.D`}
+                                                amount={priceForStripe}
+                                                panelLabel='Pay'
+                                                token={onToken}
+                                                stripeKey={publishableKey}
+                                            />
                                         </Box>
                                     </Box>
                                     <Box mb="2vh" p={3} display="flex" alignItems={"center"} justifyContent="space-between" >
-                                        <Progress borderRadius={"14px"}  value={50} size='xs' w="70%" colorScheme='blue' />
+                                        <Progress borderRadius={"14px"} value={50} size='xs' w="70%" colorScheme='blue' />
                                         <Text>1000/2000</Text>
-                                    </Box>  
+                                    </Box>
                                 </Box>
 
                             </Box>

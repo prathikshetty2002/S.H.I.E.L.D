@@ -118,7 +118,8 @@ const Navbar: React.FC = () => {
                     <DrawerBody>
                         <VStack w="full" >
                             <Box w="full" p={2}><Text fontSize={"18px"}>Home</Text></Box>
-                            <Box w="full" p={2}><Text fontSize={"18px"}>Profile</Text></Box>
+                            <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push("/profile")}>Profile</Text></Box>
+                            <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push("/Sos")}>Save our souls</Text></Box>
                             <Box w="full" p={2}><Text fontSize={"18px"} onClick={()=>router.push('/reportIncident')}>Report Incident</Text></Box>
                             <Box w="full" p={2} onClick={handleCommunity}><Text fontSize={"18px"}>Community</Text></Box>
                             <Box w="full" p={2}><Text fontSize={"18px"}>Explore Safe spot</Text></Box>
