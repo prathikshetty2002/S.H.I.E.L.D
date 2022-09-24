@@ -15,6 +15,8 @@ import { useRef, useState } from 'react'
 import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { addDoc, collection } from '@firebase/firestore'
+import DisplayPosts from '../components/DisplayPosts'
+import {  AddIcon } from '@chakra-ui/icons'
 
 
 
@@ -91,8 +93,9 @@ const community: NextPage = () => {
         <Box mt={"10vh"} >
             <Navbar />
             <Box my={"0vh"}>
-                <Box display={"flex"} w="full" justifyContent={"right"} p={2}>
-                    <Button onClick={onOpen} colorScheme={"blue"}>Add post</Button>
+                <Box display={"flex"} w="full" justifyContent={"right"} p={2}
+                position="fixed" bottom={0} right={0}>
+                    <Button onClick={onOpen} w={"40px"} h={"40px"} colorScheme={"blue"} borderRadius={"60%"} p={6}><AddIcon/></Button>
                 </Box>
 
                 <Box p={2} >
@@ -134,6 +137,8 @@ const community: NextPage = () => {
                 </Box>
 
             </Box>
+
+            <DisplayPosts/>
         </Box>
     )
 }

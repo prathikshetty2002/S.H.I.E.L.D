@@ -17,9 +17,10 @@ import {
   FormErrorMessage,
   FormHelperText,
 } from '@chakra-ui/react'
+import { collection, doc, getDocs, query, setDoc } from '@firebase/firestore'
 import { RecaptchaVerifier, signInWithCredential, signInWithPhoneNumber, PhoneAuthProvider } from "firebase/auth"
 import { useEffect, useState } from 'react'
-import { auth } from '../firebase'
+import { auth, firestore } from '../firebase'
 interface ILogin {
   isOpen: boolean,
   onOpen: () => void,
@@ -29,24 +30,25 @@ interface ILogin {
 // let confirmationResult: any
 // // let recaptchaWidgetId: any
 
-const LoginModal: React.FC<ILogin> =  ({ isOpen, onClose, onOpen }) => {
+const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
 
 
-  
+
 
   const [loading, setLoading] = useState<boolean>(false)
   const [otp, setotp] = useState('')
   const [stepnum, setstepnum] = useState<number>(1)
   const toast = useToast()
   const [number, setnumber] = useState('')
+
   const handleback = () => {
-    window.recaptchaVerifier.render().then(function(widgetId) {
+    window.recaptchaVerifier.render().then(function (widgetId) {
       grecaptcha.reset(widgetId);
     });
     setstepnum(1)
   }
 
-  const handleClick = () => { 
+  const handleClick = () => {
     console.log("number: ", number)
     if (!number) {
       toast({
@@ -70,7 +72,7 @@ const LoginModal: React.FC<ILogin> =  ({ isOpen, onClose, onOpen }) => {
     //   return
     // }
 
-    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container',{
+    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
       'size': 'invisible',
       'callback': (response) => {
         console.log(response)
@@ -81,58 +83,90 @@ const LoginModal: React.FC<ILogin> =  ({ isOpen, onClose, onOpen }) => {
         // Response expired. Ask user to solve reCAPTCHA again.
         // ...
       }
-    
+
     }, auth)
-    
-  
+
+
     const appVerifier = window.recaptchaVerifier;
     // signInWithPhoneNumber(auth, "+91 " + number, appVerifier)
-    signInWithPhoneNumber(auth,  number, appVerifier)
-    .then((confirmationResult) => {
-      // SMS sent. Prompt user to type the code from the message, then sign the
-      // user in with confirmationResult.confirm(code).
-      window.confirmationResult = confirmationResult;
-      // ...
-    }).catch((error) => {
-      // Error; SMS not sent
-      // ...
-      console.log("errror in sending otp: ", error)
-      window.recaptchaVerifier.render().then(function(widgetId) {
-        grecaptcha.reset(widgetId);
+    signInWithPhoneNumber(auth, number, appVerifier)
+      .then((confirmationResult) => {
+        // SMS sent. Prompt user to type the code from the message, then sign the
+        // user in with confirmationResult.confirm(code).
+        window.confirmationResult = confirmationResult;
+        // ...
+      }).catch((error) => {
+        // Error; SMS not sent
+        // ...
+        console.log("errror in sending otp: ", error)
+        window.recaptchaVerifier.render().then(function (widgetId) {
+          grecaptcha.reset(widgetId);
+        });
+        toast({
+          title: 'SMS NOT SENT',
+          description: "Check your network and try again",
+          status: 'error',
+          duration: 6000,
+          isClosable: true,
+        })
       });
-      toast({
-        title: 'SMS NOT SENT',
-        description: "Check your network and try again",
-        status: 'error',
-        duration: 6000,
-        isClosable: true,
-      })
-    });
 
     setstepnum(2)
   }
   useEffect(() => {
     setstepnum(1)
   }, [])
-  const handleverify =  () => {
+  const handleverify = () => {
     console.log("verify...")
-    window.confirmationResult.confirm(otp).then( (result) => {
+    window.confirmationResult.confirm(otp).then((result) => {
       // User signed in successfully.
       console.log(auth.currentUser)
 
-// add logic to add user to collection user
+      // add logic to add user to collection user
+      const uid = auth.currentUser?.uid
+      const number = auth.currentUser?.phoneNumber
 
 
-    // console.log("confirm check...")
-    //   console.log("result: ", result)
-    //   console.log("confirmation result verificationID: ", window.confirmationResult.verificationId)
 
-    //   const credential = PhoneAuthProvider.credential(window.confirmationResult.verificationId, otp)
-    //   signInWithCredential(auth,credential).then(()=>{
-    //     console.log("credential done logged in")
-    //   }).catch((error) => {
-    //     console.log("error in crendential", error)
-    //   })
+      try {
+        const docRef = doc(firestore, "users", uid?.toString());
+        const data = {
+          uid: uid,
+          number: number
+        }
+
+        let flag = giveflag(uid)
+
+        if (flag == false) {
+          setDoc(docRef, data)
+            .then(docRef => {
+              console.log("Data added");
+            })
+            .catch(error => {
+              console.log(error.message);
+            })
+        }
+        else{
+          console.log("data already there")
+        }
+
+      }
+      catch (err) {
+        console.log(err.message)
+      }
+
+
+
+      // console.log("confirm check...")
+      //   console.log("result: ", result)
+      //   console.log("confirmation result verificationID: ", window.confirmationResult.verificationId)
+
+      //   const credential = PhoneAuthProvider.credential(window.confirmationResult.verificationId, otp)
+      //   signInWithCredential(auth,credential).then(()=>{
+      //     console.log("credential done logged in")
+      //   }).catch((error) => {
+      //     console.log("error in crendential", error)
+      //   })
       // ...
 
       onClose()
@@ -141,7 +175,7 @@ const LoginModal: React.FC<ILogin> =  ({ isOpen, onClose, onOpen }) => {
       // User couldn't sign in (bad verification code?)
       // ...
       console.log("error confirmation, ", error)
-      window.recaptchaVerifier.render().then(function(widgetId) {
+      window.recaptchaVerifier.render().then(function (widgetId) {
         grecaptcha.reset(widgetId);
       });
       toast({
@@ -162,6 +196,20 @@ const LoginModal: React.FC<ILogin> =  ({ isOpen, onClose, onOpen }) => {
   //   // })
   // }, [])  
 
+  const giveflag = async (u) => {
+    const q = query(collection(firestore, "posts"));
+    const querySnapshot = await getDocs(q);
+    let flag = false
+
+    querySnapshot.forEach((doc) => {
+      if (doc.id == u) {
+        flag = true
+      }
+    })
+    return flag
+
+
+  }
 
 
   return (
