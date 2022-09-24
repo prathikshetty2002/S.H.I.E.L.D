@@ -1,9 +1,9 @@
 
-# S.H.E.I.L.D: To make you Beware of your surrounding
-The main aim of th S.H.E.I.L.D is to safeguard the individual and also make them aware about the abnormal or critical situation in the surrounding. So, that they should take the course of action according to that. An emergency guide to help you to reach out for help and safeguard 🏡
+# S.H.I.E.L.D: To make you Beware of your surrounding
+The main aim of the S.H.I.E.L.D is to safeguard the individual and also make them aware about the abnormal or critical situation in the surrounding. So, that they should take the course of action according to that. An emergency guide to help you to reach out for help and safeguard 🏡
 
 
-S.H.E.I.L.D provides a community which helps other by sharing/reporting the uncertain behaviour or sitatuion. Reporting done by any individual seems to be as an announcement to all the people nearby 📣 (around 2 km radius)
+S.H.I.E.L.D provides a community which helps other by sharing/reporting the uncertain behaviour or sitatuion. Reporting done by any individual seems to be as an announcement to all the people nearby 📣 (around 2 km radius)
 
 
 
@@ -34,7 +34,7 @@ S.H.E.I.L.D provides a community which helps other by sharing/reporting the unce
 
 ### 🏗️ Our Project
 
-The main motive of S.H.E.I.L.D is to make an environment which helps the user and also make it aware about the situations and also about how to deal with that.
+The main motive of S.H.I.E.L.D is to make an environment which helps the user and also make it aware about the situations and also about how to deal with that.
 
 
 
@@ -50,7 +50,7 @@ Clone the project
 Install dependencies:
 
 ```bash
-  cd www.sheild.com/
+  cd www.shield.com/
   
   yarn install
 ```
