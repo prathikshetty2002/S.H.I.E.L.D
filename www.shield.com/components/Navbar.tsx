@@ -19,8 +19,6 @@ import { onAuthStateChanged, signOut } from "firebase/auth"
 
 
 
-
-
 const Navbar: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { isOpen: isOpenmodal, onOpen: onOpenmodal, onClose: onClosemodal } = useDisclosure()
@@ -95,11 +93,13 @@ const Navbar: React.FC = () => {
 
     return (
         <>
-            <Box p={3} zIndex="docked" rounded={"2xl"} alignItems="center" w="96" mx={"auto"} bg={"aqua"} display="flex" position="fixed" top="5" left="0" justifyContent={"space-between"} >
-                <Box>
-                    <Heading fontSize={"20px"}>S.H.I.E.L.D</Heading>
+
+            <Box px={6} py={2}  zIndex="docked" rounded={"2xl"} alignItems="center" w="96"  bg={"blackAlpha.800"}
+             display="flex"  shadow="2xl"  position="fixed" left="2" top="5" justifyContent={"space-between"} >
+                <Box  >
+                    <Heading fontSize={"20px"} color="white" >S.H.I.E.L.D</Heading>
                 </Box>
-                <Button bg="aqua" onClick={onOpen} ref={btnRef} display={"flex"}>
+                <Button bg="teal.200" onClick={onOpen} ref={btnRef} display={"flex"}>
                     <HamburgerIcon h={7} w={7} />
                 </Button>
 

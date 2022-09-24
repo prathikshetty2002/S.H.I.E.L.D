@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import L from 'leaflet';
 import * as ReactLeaflet from 'react-leaflet';
 import { useMap } from 'react-leaflet/hooks'
@@ -21,11 +21,12 @@ import { safeHouse } from './SafeHouse';
 import SafeSpots from './SafeSpots';
 import NaturalDisasters from './NaturalDisasters';
 import UserReports from './UserReports';
+import { mymarker } from './MyMarker';
 
 const { MapContainer } = ReactLeaflet;
 const DEFAULT_CENTER = [77.07695,
     28.83979]
-
+    
 
 const bounds = [
   [51.49, -0.08],
@@ -40,7 +41,16 @@ const myIcon = new L.Icon({
 const Map = ({ children, className, ...rest }) => {
   let mapClassName = styles.map;
   
+  const [geoLocation, setGeoLocation] = useState<any>(null)
 
+  useEffect(() => {
+      navigator.geolocation.getCurrentPosition(function (position) {
+          console.log("Latitude is :", position.coords.latitude);
+          console.log("Longitude is :", position.coords.longitude);
+          setGeoLocation([position.coords.latitude, position.coords.longitude])
+          // console.log("geoLocation: ", geoLocation)
+      });
+  }, [])
   if ( className ) {
     mapClassName = `${mapClassName} ${className}`;
   }
@@ -95,11 +105,11 @@ const Map = ({ children, className, ...rest }) => {
               <SafeSpots />
               <NaturalDisasters />
               <UserReports />
-              <Marker icon={safeHouse} position={DEFAULT_CENTER}>
+              {geoLocation && <Marker  position={[geoLocation[0], geoLocation[1]]}>
                 <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
+                  You are here
                 </Popup>
-              </Marker>
+              </Marker>}
               
 
       <MyComponent />

@@ -6,10 +6,17 @@ import { useEffect, useState } from 'react'
 import { auth, firestore } from '../firebase'
 import { doc, updateDoc } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
+import Script from 'next/script'
 
 function MyApp({ Component, pageProps }: AppProps) {
   
   const [geoLocation, setGeoLocation] = useState<any>([])
+
+  function setupLandbot() {
+    new Landbot.Livechat({
+      configUrl: "https://storage.googleapis.com/landbot.online/v3/H-1375501-J64G5MJIRVVAU5CN/index.json"
+    });
+  }
 
   useEffect(()=> {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -41,7 +48,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider>
-      
+      <Script
+  strategy="lazyOnload"
+  src="https://static.landbot.io/landbot-3/landbot-3.0.0.js"
+  onLoad={setupLandbot}
+/>
       <Component {...pageProps} />
     </ChakraProvider>
   )

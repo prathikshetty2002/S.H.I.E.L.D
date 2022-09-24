@@ -6,13 +6,13 @@ export default class _Document extends Document {
     return (
       <Html>
         <Head>
-          <title>S.H.I.E.L.D. - PWA</title>
           <link
             rel="shortcut icon"
             href="alarm-clock.png"
             type="image/x-icon"
           />
           <link rel="manifest" href="/manifest.json" />
+          
         </Head>
         <body>
           <Main />
