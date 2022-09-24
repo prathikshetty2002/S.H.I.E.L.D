@@ -7,11 +7,11 @@ import {
     FormErrorMessage,
     FormHelperText,
 } from '@chakra-ui/react'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from '@firebase/storage'
 import { firestore, storage } from '../firebase'
-import { addDoc, collection } from '@firebase/firestore'
+import { addDoc, collection, query, where, getDocs } from '@firebase/firestore'
 import {
     Modal,
     ModalOverlay,
@@ -43,6 +43,32 @@ const reportIncident: NextPage = () => {
 
     const router = useRouter()
 
+    const [geoLocation, setGeoLocation] = useState<any>([])
+
+  useEffect(()=> {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log("Latitude is :", position.coords.latitude);
+      console.log("Longitude is :", position.coords.longitude);
+      setGeoLocation([position.coords.latitude, position.coords.longitude])
+      console.log("geoLocation: ", geoLocation)
+    });
+
+    const processData = async () => {
+        const usersRef = collection(firestore, "users")
+        const lowerLatitude = geoLocation[0] - 0.02
+        const upperLatitude = geoLocation[0] + 0.02
+        // const lowerLongitude = geoLocation[1] - 0.02
+        // const upperLongitude = geoLocation[1] + 0.02
+        const lowerLatitudeUsersRef = query(usersRef, where("latitude", '>', lowerLatitude))
+        const upperLatitudeUsersRef = query(usersRef, where("latitude", '<', upperLatitude))
+        const lowerLatitudeUsers = await getDocs(lowerLatitudeUsersRef)
+        const upperLatitudeUsers = await getDocs(upperLatitudeUsersRef)
+        console.log("lower latitude, ",lowerLatitudeUsers )
+        console.log("upper latitude, ", upperLatitudeUsers)
+        
+    }
+    processData()
+  }, [])
 
     const handleChange = async (event) => {
         setLoading(true)
@@ -66,7 +92,9 @@ const reportIncident: NextPage = () => {
         const data = {
             type: type,
             description: description,
-            imgurl: imgurl
+            imgurl: imgurl,
+            latitude: geoLocation[0] as number,
+          longitude: geoLocation[1] as number
         };
         await addDoc(dbRef, data)
             .then(docRef => {
@@ -76,7 +104,17 @@ const reportIncident: NextPage = () => {
             .catch(error => {
                 console.log(error);
                 setsubmitloading(false)
-            })   
+            })
+
+        // const usersRef = collection(firestore, "users")
+        // const lowerLatitude = geoLocation[0] - 0.02
+        // const upperLatitude = geoLocation[0] + 0.02
+        // // const lowerLongitude = geoLocation[1] - 0.02
+        // // const upperLongitude = geoLocation[1] + 0.02
+        // const lowerLatitudeUsers = query(usersRef, where("location[0]", '>', lowerLatitude))
+        // const upperLatitudeUsers = query(usersRef, where("location[0]", '<', upperLatitude))
+        // console.log("lower latitude, ", lowerLatitudeUsers)
+        // console.log("upper latitude, ", upperLatitudeUsers)
     }
 
     const handleClose = ()=>{

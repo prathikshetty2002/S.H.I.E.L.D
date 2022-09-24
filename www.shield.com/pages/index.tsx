@@ -2,10 +2,20 @@ import { Box, Container, Text } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import Navbar from '../components/Navbar'
 import Map from '../components/Map';
+import { useEffect } from 'react';
 
-const DEFAULT_CENTER = [51.51, -0.12]
+const DEFAULT_CENTER = [21.6983,
+  79.9585]
 
 const Home: NextPage = () => {
+
+  useEffect(()=> {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log("Latitude is :", position.coords.latitude);
+      console.log("Longitude is :", position.coords.longitude);
+    });
+  })
+
   return (
     <Box>
       <Navbar />
@@ -17,6 +27,7 @@ const Home: NextPage = () => {
             </>
 
         </Map>          
+        {/* <Map /> */}
       </Box>
     </Box>
   )
