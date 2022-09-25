@@ -47,6 +47,10 @@ The main motive of S.H.I.E.L.D is to make an environment which helps the user an
 |--------------|-----------|-------------------|
 | <img src="imgs/ngoregister.png" width="250"> | <img src="imgs/ngomarker.png" width="250"> | <img src="imgs/report.png" width="250"> |
 
+| Login  | Live Notifications | Donations |  
+|--------|--------------------|-----------|
+| <img src="imgs/login.png" width="250"> | <img src="imgs/report.png" width="250"> | <img src="imgs/MSG.jpeg" width="250"> |
+
 
 ## Instructions on running project locally:
 
