@@ -38,6 +38,7 @@ const myIcon = new L.Icon({
   popupAnchor:  [-0, -0],
   iconSize: [32,45],     
 });
+// @ts-ignore
 const Map = ({ children, className, ...rest }) => {
   let mapClassName = styles.map;
   

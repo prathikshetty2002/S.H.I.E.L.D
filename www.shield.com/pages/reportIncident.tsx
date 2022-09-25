@@ -47,7 +47,8 @@ const ReportIncident: NextPage = () => {
     const [loading, setLoading] = useState(false)
     const hiddenFileInput = useRef(null)
     const [submitloading, setsubmitloading] = useState(false)
-    const handleClick = event => {
+    const handleClick = () => {
+        // @ts-ignore
         hiddenFileInput.current.click();
     }
     const [type, settype] = useState("")
@@ -68,7 +69,7 @@ const ReportIncident: NextPage = () => {
 
 
 
-    const handleChange = async (event) => {
+    const handleChange = async (event:any) => {
         setLoading(true)
         const fileUploaded = event.target.files[0];
         try {
@@ -84,7 +85,7 @@ const ReportIncident: NextPage = () => {
 
 
 
-        } catch (err) {
+        } catch (err:any) {
             console.log(err.message)
         }
         setLoading(false)
@@ -138,9 +139,11 @@ const ReportIncident: NextPage = () => {
         const docRef = doc(firestore, "users", uid);
         const docSnap = await getDoc(docRef);
         let dataobj = {}
-        if (docSnap.data()["credits"]) {
+                            {/* @ts-ignore */}
+        if (docSnap?.data()["credits"]) {
             dataobj = {
-                credits: docSnap.data()["credits"] + 5
+//@ts-ignore 
+                credits: docSnap!.data()["credits"] + 5
             }
         }
         else {
@@ -202,9 +205,13 @@ const ReportIncident: NextPage = () => {
         });
         const phoneList = new Set()
         usersData.forEach(p => {
+//@ts-ignore 
             phoneList.add(p.number)
+//@ts-ignore             
             if (p.number1) phoneList.add(p.number1)
+            //@ts-ignore 
             if (p.number2) phoneList.add(p.number2)
+            //@ts-ignore 
             if (p.number3) phoneList.add(p.number3)
         })
         phoneList.forEach(p => {
@@ -270,6 +277,7 @@ const ReportIncident: NextPage = () => {
 
                     <FormControl w="90%" >
                         <FormLabel>Select Image (optional):</FormLabel>
+                        {/* @ts-ignore  */}
                         <Button isLoading={loading} w="full" _hover={{ bg: "green" }} onClick={handleClick} bg="green" mt="2vh" textColor={"white"} cursor="pointer" borderRadius={"10px"} fontSize={"16px"} textAlign={"center"} htmlFor='inp'>
                             Upload Images
                             <Input onChange={handleChange} ref={hiddenFileInput} display={"none"} id="inp" type="file" />

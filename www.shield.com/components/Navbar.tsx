@@ -99,6 +99,7 @@ const Navbar: React.FC = () => {
                 <Box  >
                     <Heading fontSize={"20px"} color="white" >S.H.I.E.L.D</Heading>
                 </Box>
+                {/* @ts-ignore */}
                 <Button bg="whiteAlpha.800" onClick={onOpen} ref={btnRef} display={"flex"}>
                     <HamburgerIcon h={7} w={7} />
                 </Button>
@@ -108,6 +109,7 @@ const Navbar: React.FC = () => {
                 isOpen={isOpen}
                 placement='right'
                 onClose={onClose}
+                // @ts-ignore
                 finalFocusRef={btnRef}
                 
             >

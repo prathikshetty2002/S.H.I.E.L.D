@@ -12,21 +12,54 @@ function MyApp({ Component, pageProps }: AppProps) {
   
   const [geoLocation, setGeoLocation] = useState<any>([])
 
-  function setupLandbot() {
-    new Landbot.Livechat({
-      configUrl: "https://storage.googleapis.com/landbot.online/v3/H-1375501-J64G5MJIRVVAU5CN/index.json"
-    });
-  }
+  useEffect(() => {
+if (navigator.geolocation) {
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then(function (result) {
+          if (result.state === "granted") {
+            console.log(result.state);
+            getLocation()
+            //If granted then you can directly call your function here
+          } else if (result.state === "prompt") {
+            console.log(result.state);
+          } else if (result.state === "denied") {
+            //If denied then you have to show instructions to enable location
+          }
+          result.onchange = function () {
+            console.log(result.state);
+          };
+        });
+    } else {
+      alert("Sorry Not available!");
+    }
+  },[])
 
-  useEffect(()=> {
+  const getLocation = () => {
     navigator.geolocation.getCurrentPosition(function(position) {
       console.log("Latitude is :", position.coords.latitude);
       console.log("Longitude is :", position.coords.longitude);
       setGeoLocation([position.coords.latitude, position.coords.longitude])
       console.log("geoLocation: ", geoLocation)
     });
+  }
+
+  function setupLandbot() {
+    // @ts-ignore
+    new Landbot.Livechat({
+      configUrl: "https://storage.googleapis.com/landbot.online/v3/H-1375501-J64G5MJIRVVAU5CN/index.json"
+    });
+  }
+
+  // useEffect(()=> {
+  //   navigator.geolocation.getCurrentPosition(function(position) {
+  //     console.log("Latitude is :", position.coords.latitude);
+  //     console.log("Longitude is :", position.coords.longitude);
+  //     setGeoLocation([position.coords.latitude, position.coords.longitude])
+  //     console.log("geoLocation: ", geoLocation)
+  //   });
   
-  }, [])
+  // }, [])
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {

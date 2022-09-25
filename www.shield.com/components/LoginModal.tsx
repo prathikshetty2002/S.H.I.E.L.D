@@ -52,7 +52,10 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   const [number, setnumber] = useState('')
 
   const handleback = () => {
+    // @ts-ignore
     window.recaptchaVerifier.render().then(function (widgetId) {
+    // @ts-ignore
+      
       grecaptcha.reset(widgetId);
     });
     setstepnum(1)
@@ -82,9 +85,10 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
     //   return
     // }
 
+    // @ts-ignore
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
       'size': 'invisible',
-      'callback': (response) => {
+      'callback': (response: any) => {
         console.log(response)
         // reCAPTCHA solved, allow signInWithPhoneNumber.
         // ...
@@ -96,20 +100,23 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
 
     }, auth)
 
-
+    // @ts-ignore
     const appVerifier = window.recaptchaVerifier;
     signInWithPhoneNumber(auth, "+91 " + number, appVerifier)
     // signInWithPhoneNumber(auth, number, appVerifier)
       .then((confirmationResult) => {
         // SMS sent. Prompt user to type the code from the message, then sign the
         // user in with confirmationResult.confirm(code).
+    // @ts-ignore
         window.confirmationResult = confirmationResult;
         // ...
       }).catch((error) => {
         // Error; SMS not sent
         // ...
         console.log("errror in sending otp: ", error)
+    // @ts-ignore
         window.recaptchaVerifier.render().then(function (widgetId) {
+    // @ts-ignore
           grecaptcha.reset(widgetId);
         });
         toast({
@@ -128,7 +135,8 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   }, [])
   const handleverify = () => {
     console.log("verify...")
-    window.confirmationResult.confirm(otp).then(async (result) => {
+    // @ts-ignore
+    window.confirmationResult.confirm(otp).then(async () => {
       // User signed in successfully.
       console.log(auth.currentUser)
 
@@ -163,7 +171,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
         }
 
       }
-      catch (err) {
+      catch (err:any) {
         console.log(err.message)
       }
 
@@ -183,11 +191,13 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
 
       onClose()
 
-    }).catch((error) => {
+    }).catch((error: any) => {
       // User couldn't sign in (bad verification code?)
       // ...
       console.log("error confirmation, ", error)
+    // @ts-ignore
       window.recaptchaVerifier.render().then(function (widgetId) {
+    // @ts-ignore
         grecaptcha.reset(widgetId);
       });
       toast({
@@ -208,7 +218,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   //   // })
   // }, [])  
 
-  const giveflag = async (u) => {
+  const giveflag = async (u:any) => {
     const q = doc(firestore, "users",u);
     const querySnapshot = await getDoc(q);
     return querySnapshot.exists()

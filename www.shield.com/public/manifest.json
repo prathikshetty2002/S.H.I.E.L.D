@@ -7,6 +7,7 @@
     "theme_color": "#FFFFFF",
     "background_color": "#FFFFFF",
     "start_url": "/",
+    "required_features": ["geolocation"],
     "icons": [
       {
         "src": "/vercel.svg",

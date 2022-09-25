@@ -116,7 +116,7 @@ const Home: NextPage = () => {
 
 
 
-            } catch (err) {
+            } catch (err:any) {
                 console.log(err.message)
             }
         } else {
@@ -149,6 +149,7 @@ const Home: NextPage = () => {
                     <HStack>
                         <FormControl>
                             <FormLabel>Age:</FormLabel>
+                            {/* @ts-ignore */}
                             <Input value={age} p="10px" onChange={(e) => setage(e.target.value)} placeholder='enter age' type='number' />
                         </FormControl>
                         <FormControl>
@@ -161,14 +162,17 @@ const Home: NextPage = () => {
                     </HStack>
                     <FormControl>
                         <FormLabel>Emergency Contact 1:</FormLabel>
+                            {/* @ts-ignore */}
                         <Input value={number1} p="20px" onChange={(e) => setnumber1(e.target.value)} placeholder='enter first number' />
                     </FormControl>
                     <FormControl>
                         <FormLabel>Emergency Contact 2:</FormLabel>
+                            {/* @ts-ignore */}
                         <Input value={number2} p="20px" onChange={(e) => setnumber2(e.target.value)} placeholder='enter second number' />
                     </FormControl>
                     <FormControl>
                         <FormLabel>Emergency Contact 3:</FormLabel>
+                            {/* @ts-ignore */}
                         <Input value={number3} p="20px" onChange={(e) => setnumber3(e.target.value)} placeholder='enter third number' />
                     </FormControl>
                     <Box>

@@ -24,7 +24,7 @@ const NaturalDisasters:React.FC = () => {
     return (
         <>
         {
-            data?.map(d => (
+            data?.map((d:any) => (
                 <CircleMarker key={d.id} center={[d.location[1], d.location[0]]} pathOptions={{ color: 'red' }}  radius={25}>
               <Popup>
                 <Box>

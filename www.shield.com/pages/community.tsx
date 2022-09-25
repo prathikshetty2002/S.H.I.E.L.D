@@ -22,7 +22,8 @@ import {  AddIcon } from '@chakra-ui/icons'
 
 const community: NextPage = () => {
     const hiddenFileInput = useRef(null)
-    const handleClick = event => {
+    const handleClick = () => {
+        // @ts-ignore
         hiddenFileInput.current.click();
     }
 
@@ -34,7 +35,7 @@ const community: NextPage = () => {
 
 
     const toast = useToast()
-    const handleChange = async (event) => {
+    const handleChange = async (event:any) => {
         const fileUploaded = event.target.files[0];
         setLoading(true)
         console.log("yess")
@@ -82,7 +83,7 @@ const community: NextPage = () => {
                     console.log(error);
                 })
                 
-        } catch (err) {
+        } catch (err:any) {
             console.log(err.message)
         }
         setpostLoading(false)
@@ -108,6 +109,7 @@ const community: NextPage = () => {
                             <ModalCloseButton />
                             <ModalBody>
                                 <Box w="full" display={"flex"} justifyContent="center">
+                                     {/* @ts-ignore */}
                                     <Button isLoading={loading} _hover={{ bg: "green" }} onClick={handleClick} bg="green" mt="2vh" textColor={"white"} cursor="pointer" borderRadius={"10px"} fontSize={"16px"} textAlign={"center"} htmlFor='inp'>
                                         Upload Images
                                         <Input onChange={handleChange} ref={hiddenFileInput} display={"none"} id="inp" type="file" />

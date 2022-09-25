@@ -63,7 +63,7 @@ const Home: NextPage = () => {
                     console.log(error);
                 })
                 
-        } catch (err) {
+        } catch (err:any) {
             console.log(err.message)
             onClose()
                 setloading(false)
