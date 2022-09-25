@@ -39,9 +39,13 @@ The main motive of S.H.I.E.L.D is to make an environment which helps the user an
 ## Snapshots
 
 
-| Home page  | Live report | NGOs Info |
-|------------|-------------|-------------|
-| <img src="imgs/home.png" width="250"> | <img src="imgs/livereport.png" width="250"> | <img src="imgs/ngomarker.png" width="250"> |
+| Home Page  | Live Report | Our Features |
+|------------|-------------|--------------|
+| <img src="imgs/home.png" width="250"> | <img src="imgs/livereport.png" width="250"> | <img src="imgs/options.png" width="250"> |
+
+| NGOs Mapping | NGOs Info | Register Incident |  
+|--------------|-----------|-------------------|
+| <img src="imgs/ngoregister.png" width="250"> | <img src="imgs/ngomarker.png" width="250"> | <img src="imgs/report.png" width="250"> |
 
 
 ## Instructions on running project locally:
