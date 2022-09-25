@@ -49,7 +49,11 @@ The main motive of S.H.I.E.L.D is to make an environment which helps the user an
 
 | Login  | Live Notifications | Donations |  
 |--------|--------------------|-----------|
-| <img src="imgs/login.png" width="250"> | <img src="imgs/report.png" width="250"> | <img src="imgs/MSG.jpeg" width="250"> |
+| <img src="imgs/login.png" width="250"> | <img src="imgs/MSG.jpeg" width="250"> | <img src="imgs/stripe.png" width="250"> |
+ 
+| Chatbot  | It's Features | Community Page  |  
+|----------|---------------|-----------------|
+| <img src="imgs/chatbot2.png" width="250"> | <img src="imgs/chatbot4" width="250"> | <img src="imgs/communitypage.png" width="250"> |
 
 
 ## Instructions on running project locally:
