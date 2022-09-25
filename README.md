@@ -53,7 +53,7 @@ The main motive of S.H.I.E.L.D is to make an environment which helps the user an
  
 | Chatbot  | It's Features | Community Page  |  
 |----------|---------------|-----------------|
-| <img src="imgs/chatbot2.png" width="250"> | <img src="imgs/chatbot4" width="250"> | <img src="imgs/communitypage.png" width="250"> |
+| <img src="imgs/chatbot2.png" width="250"> | <img src="imgs/chatbot4.png" width="250"> | <img src="imgs/communitypage.png" width="250"> |
 
 
 ## Instructions on running project locally:
