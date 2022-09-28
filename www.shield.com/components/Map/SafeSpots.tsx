@@ -1,6 +1,5 @@
 import { safeHouse } from "./SafeHouse"
-import { Marker } from 'react-leaflet/Marker';
-import { Popup } from 'react-leaflet/Popup';
+import { Marker, Popup } from 'react-leaflet';
 import { Box, Button, Text } from "@chakra-ui/react";
 import {PhoneIcon} from "@chakra-ui/icons"
 

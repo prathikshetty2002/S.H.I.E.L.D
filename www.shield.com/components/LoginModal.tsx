@@ -18,7 +18,7 @@ import {
   FormHelperText,
 } from '@chakra-ui/react'
 import { addDoc, collection, doc, getDoc, getDocs, query, setDoc } from '@firebase/firestore'
-import { RecaptchaVerifier, signInWithCredential, signInWithPhoneNumber, PhoneAuthProvider } from "firebase/auth"
+import { RecaptchaVerifier, signInWithCredential, signInWithPhoneNumber, PhoneAuthProvider, RecaptchaParameters } from "firebase/auth"
 import { useEffect, useState } from 'react'
 import { auth, firestore } from '../firebase'
 interface ILogin {
@@ -81,10 +81,10 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
     //   })
     //   return
     // }
-
+    
     window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
       'size': 'invisible',
-      'callback': (response) => {
+      'callback': (response: any) => {
         console.log(response)
         // reCAPTCHA solved, allow signInWithPhoneNumber.
         // ...
@@ -126,15 +126,15 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   useEffect(() => {
     setstepnum(1)
   }, [])
-  const handleverify = () => {
+  const handleVerify = () => {
     console.log("verify...")
     window.confirmationResult.confirm(otp).then(async (result) => {
       // User signed in successfully.
       console.log(auth.currentUser)
 
       // add logic to add user to collection user
-      const uid = auth.currentUser?.uid
-      const number = auth.currentUser?.phoneNumber
+      const uid = auth.currentUser!.uid
+      const number = auth.currentUser!.phoneNumber
 
       try {
         
@@ -164,7 +164,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
 
       }
       catch (err) {
-        console.log(err.message)
+        console.log(err)
       }
 
 
@@ -208,7 +208,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
   //   // })
   // }, [])  
 
-  const giveflag = async (u) => {
+  const giveflag = async (u: string) => {
     const q = doc(firestore, "users",u);
     const querySnapshot = await getDoc(q);
     return querySnapshot.exists()
@@ -232,7 +232,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
               <FormControl isRequired>
                 <FormLabel>Phone number</FormLabel>
                 <Input required id="phone" value={number} onChange={(e) => setnumber(e.target.value)} type='text' placeholder="Enter phone number" />
-                <FormHelperText>We'll never share your phone number</FormHelperText>
+                <FormHelperText>{"We'll"} never share your phone number</FormHelperText>
               </FormControl>
               :
               <FormControl isRequired>
@@ -269,7 +269,7 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
               ?
               <Button colorScheme={"blue"} isLoading={loading} onClick={handleClick}>Submit</Button>
               :
-              <Button colorScheme={"blue"} onClick={handleverify}>verify</Button>
+              <Button colorScheme={"blue"} onClick={handleVerify}>verify</Button>
 
           }
 
@@ -279,5 +279,4 @@ const LoginModal: React.FC<ILogin> = ({ isOpen, onClose, onOpen }) => {
     </Modal>
   )
 }
-
 export default LoginModal

@@ -64,7 +64,7 @@ const Home: NextPage = () => {
                 })
                 
         } catch (err) {
-            console.log(err.message)
+            console.log(err)
             onClose()
                 setloading(false)
         }

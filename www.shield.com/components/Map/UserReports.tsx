@@ -2,8 +2,8 @@ import { Text } from '@chakra-ui/layout';
 import { collection, getDocs } from '@firebase/firestore';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { CircleMarker } from 'react-leaflet/CircleMarker';
-import { Popup } from 'react-leaflet/Popup';
+import { CircleMarker, Popup } from 'react-leaflet';
+// import { Popup } from 'react-leaflet/Popup';
 import { firestore } from '../../firebase';
 
 const UserReports: React.FC = () => {

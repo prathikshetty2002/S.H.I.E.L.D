@@ -2,7 +2,7 @@ import { Box, Button, Container, Heading, Input, Progress, Text, Textarea, useDi
 import type { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar'
-import StripeCheckout from 'react-stripe-checkout';
+import StripeCheckout, { Token } from 'react-stripe-checkout';
 import {
     Modal,
     ModalOverlay,
@@ -24,12 +24,12 @@ import { firestore } from '../firebase'
 import { async } from '@firebase/util'
 
 
-const donations: NextPage = () => {
+const Donations: NextPage = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const finalRef = React.useRef(null)
     const [name, setname] = useState("")
     const [description, setdescription] = useState("")
-    const [amount, setamount] = useState(0)
+    const [amount, setamount] = useState<string>("0")
     const toast = useToast()
     const [loading, setloading] = useState(false)
     const [data, setdata] = useState<any>([])
@@ -78,14 +78,14 @@ const donations: NextPage = () => {
                 })
 
         } catch (err) {
-            console.log(err.message)
+            console.log(err)
         }
     }
 
     const priceForStripe = 100;
     const publishableKey = 'pk_test_51LlLhwSAMKxu09dqIatxe6iq2o9s6chjt7yn8siJraECP69y8kAreyWg0dKzEw2BtwutAW0jRvaE9TDzAM6lFzBf003M8dE490';
 
-    const onToken = token => {
+    const onToken = (token: Token) => {
         console.log(token);
         alert('Payment Succesful!');
     };
@@ -102,7 +102,7 @@ const donations: NextPage = () => {
             <VStack>
                 {
                     data &&
-                    data.map((d) => {
+                    data.map((d: any) => {
                         return (
                             <Box key={d.id} p={3}>
                                 <Box borderRadius={"14px"} boxShadow={"0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"} >
@@ -182,4 +182,4 @@ const donations: NextPage = () => {
     )
 }
 
-export default donations
+export default Donations
