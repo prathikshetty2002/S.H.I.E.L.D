@@ -13,7 +13,7 @@ import {
     DrawerContent,
     DrawerCloseButton,
 } from '@chakra-ui/react'
-import React, { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import LoginModal from "./LoginModal"
 import { onAuthStateChanged, signOut } from "firebase/auth"
 
@@ -22,7 +22,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth"
 const Navbar: React.FC = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { isOpen: isOpenmodal, onOpen: onOpenmodal, onClose: onClosemodal } = useDisclosure()
-    const btnRef = React.useRef()
+    const btnRef = useRef<HTMLButtonElement>(null)
     const router = useRouter()
     const [user, setUser] = useState<boolean>(false)
     useEffect(() => {

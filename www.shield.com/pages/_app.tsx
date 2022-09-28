@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [geoLocation, setGeoLocation] = useState<any>([])
 
   function setupLandbot() {
+    // @ts-ignore
     new Landbot.Livechat({
       configUrl: "https://storage.googleapis.com/landbot.online/v3/H-1375501-J64G5MJIRVVAU5CN/index.json"
     });

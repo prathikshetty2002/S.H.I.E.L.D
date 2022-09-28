@@ -1,14 +1,7 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import L from 'leaflet';
 import * as ReactLeaflet from 'react-leaflet';
-import { useMap } from 'react-leaflet/hooks'
-import { TileLayer } from 'react-leaflet/TileLayer';
-import { Marker } from 'react-leaflet/Marker';
-import { Popup } from 'react-leaflet/Popup';
-import { SVGOverlay } from 'react-leaflet/SVGOverlay';
-
-import { CircleMarker } from 'react-leaflet/CircleMarker';
-
+import { useMap, TileLayer, Marker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css';
 import marker from '/public/MarkerIcons/community.png'
 import styles from './Map.module.css';
@@ -33,12 +26,18 @@ const bounds = [
   [51.5, -0.06],
 ]
 const myIcon = new L.Icon({
-  iconUrl: marker,
-  iconRetinaUrl: marker,
+  iconUrl: "/MarkerIcons/community.png",
+  iconRetinaUrl: "/MarkerIcons/community.png",
   popupAnchor:  [-0, -0],
   iconSize: [32,45],     
 });
-const Map = ({ children, className, ...rest }) => {
+
+interface IMap extends ReactLeaflet.MapContainerProps {
+  children: React.ReactNode,
+  className: string
+}
+
+const Map:React.FC<IMap> = ({ children, className, ...rest }) => {
   let mapClassName = styles.map;
   
   const [geoLocation, setGeoLocation] = useState<any>(null)
@@ -66,9 +65,7 @@ const Map = ({ children, className, ...rest }) => {
   //   })
   //   }
   function MyComponent() {
-    const map = useMap({
-      zoomControl: false
-    })
+    const map = useMap()
     console.log('map center:', map.getCenter())
     return null
   }
@@ -77,6 +74,7 @@ const Map = ({ children, className, ...rest }) => {
     
   useEffect(() => {
     (async function init() {
+      // @ts-ignore
       delete L.Icon.Default.prototype._getIconUrl;
       // L.map('Map_map__xIdpF', { zoomControl: false });
       L.marker([51.543, -0.12], {

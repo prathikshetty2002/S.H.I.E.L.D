@@ -16,17 +16,17 @@ import { onAuthStateChanged } from 'firebase/auth'
 // name , age , gender ,  3 contacts
 const Home: NextPage = () => {
 
-    const [name, setname] = useState("")
-    const [age, setage] = useState(0)
-    const [gender, setgender] = useState("")
-    const [number1, setnumber1] = useState(0)
-    const [number2, setnumber2] = useState(0)
-    const [number3, setnumber3] = useState(0)
+    const [name, setname] = useState<string>()
+    const [age, setage] = useState<number>()
+    const [gender, setgender] = useState<string>()
+    const [number1, setnumber1] = useState<string>()
+    const [number2, setnumber2] = useState<string>()
+    const [number3, setnumber3] = useState<string>()
     const toast = useToast()
     const [loading, setloading] = useState(false)
     const { isOpen: isOpenmodal, onOpen: onOpenmodal, onClose: onClosemodal } = useDisclosure()
     const [userData, setUserData] = useState<any>()
-    const [credits, setcredits] = useState("")
+    const [credits, setcredits] = useState<number>(0)
     // useEffect(() => {
     //     if (!auth.currentUser) onOpenmodal()
     // }, [])
@@ -49,12 +49,10 @@ const Home: NextPage = () => {
             setname(userData["name"] as string)
             setage(userData["age"] as number)
             setgender(userData["gender"] as string)
-            setnumber1(userData["number1"] as number)
-            setnumber2(userData["number2"] as number)
-            setnumber3(userData["number3"] as number)
-            if (userData["credits"]) {
-                setcredits(userData["credits"])
-            }
+            setnumber1(userData["number1"] as string)
+            setnumber2(userData["number2"] as string)
+            setnumber3(userData["number3"] as string)
+            setcredits(userData["credits"])
         }
     }, [userData])
 
@@ -72,19 +70,6 @@ const Home: NextPage = () => {
         if (userData) {
 
             setloading(true)
-            // if (!name || !age || !gender || !number1 || !number2 || !number3) {
-            //     toast({
-            //         title: 'Error.',
-            //         description: "All fields are compulsory to create profile",
-            //         status: 'error',
-            //         duration: 6000,
-            //         isClosable: true,
-            //     })
-            //     setloading(false)
-            //     return
-            // }
-
-
 
             try {
                 const uid = auth.currentUser!.uid
@@ -117,7 +102,7 @@ const Home: NextPage = () => {
 
 
             } catch (err) {
-                console.log(err.message)
+                console.log(err)
             }
         } else {
             onOpenmodal()
@@ -149,7 +134,7 @@ const Home: NextPage = () => {
                     <HStack>
                         <FormControl>
                             <FormLabel>Age:</FormLabel>
-                            <Input value={age} p="10px" onChange={(e) => setage(e.target.value)} placeholder='enter age' type='number' />
+                            <Input value={age} p="10px" onChange={(e) => setage(e.target.value as unknown as number)} placeholder='enter age' type='number' />
                         </FormControl>
                         <FormControl>
                             <FormLabel>Gender:</FormLabel>
@@ -161,15 +146,15 @@ const Home: NextPage = () => {
                     </HStack>
                     <FormControl>
                         <FormLabel>Emergency Contact 1:</FormLabel>
-                        <Input value={number1} p="20px" onChange={(e) => setnumber1(e.target.value)} placeholder='enter first number' />
+                        <Input value={number1} p="20px" onChange={(e) => setnumber1(e.target.value  as unknown as string)} placeholder='enter first number' />
                     </FormControl>
                     <FormControl>
                         <FormLabel>Emergency Contact 2:</FormLabel>
-                        <Input value={number2} p="20px" onChange={(e) => setnumber2(e.target.value)} placeholder='enter second number' />
+                        <Input value={number2} p="20px" onChange={(e) => setnumber2(e.target.value  as unknown as string)} placeholder='enter second number' />
                     </FormControl>
                     <FormControl>
                         <FormLabel>Emergency Contact 3:</FormLabel>
-                        <Input value={number3} p="20px" onChange={(e) => setnumber3(e.target.value)} placeholder='enter third number' />
+                        <Input value={number3} p="20px" onChange={(e) => setnumber3(e.target.value  as unknown as string)} placeholder='enter third number' />
                     </FormControl>
                     <Box>
                         <Text fontWeight={"semibold"} fontSize="20px"> Your Credits : {credits ? credits + " credits" : "No Credits"}</Text>

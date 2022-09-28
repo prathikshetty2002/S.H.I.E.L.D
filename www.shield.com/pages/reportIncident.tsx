@@ -7,7 +7,7 @@ import {
     FormErrorMessage,
     FormHelperText,
 } from '@chakra-ui/react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { ChangeEventHandler, useEffect, useRef, useState } from 'react'
 import { v4 } from 'uuid'
 import { getDownloadURL, ref, uploadBytes } from '@firebase/storage'
 import { auth, firestore, storage } from '../firebase'
@@ -45,10 +45,10 @@ const ReportIncident: NextPage = () => {
     const [imgurl, setimgurl] = useState("")
     const [disp, setdisp] = useState("none")
     const [loading, setLoading] = useState(false)
-    const hiddenFileInput = useRef(null)
+    const hiddenFileInput = useRef<HTMLInputElement>(null)
     const [submitloading, setsubmitloading] = useState(false)
-    const handleClick = event => {
-        hiddenFileInput.current.click();
+    const handleClick = () => {
+        if(hiddenFileInput.current !== null) hiddenFileInput.current.click();
     }
     const [type, settype] = useState("")
     const [description, setdescription] = useState("")
@@ -68,7 +68,8 @@ const ReportIncident: NextPage = () => {
 
 
 
-    const handleChange = async (event) => {
+    const handleChange:ChangeEventHandler<HTMLInputElement> | undefined = async (event) => {
+        if(event.target.files) {
         setLoading(true)
         const fileUploaded = event.target.files[0];
         try {
@@ -78,16 +79,11 @@ const ReportIncident: NextPage = () => {
             const link = await getDownloadURL(imageref)
             setimgurl(link)
             setdisp("block")
-
-
-
-
-
-
         } catch (err) {
-            console.log(err.message)
+            console.log(err)
         }
         setLoading(false)
+    }
     }
 
     const submithandler = async () => {
@@ -136,9 +132,9 @@ const ReportIncident: NextPage = () => {
         // credits assign
         const uid = auth.currentUser.uid
         const docRef = doc(firestore, "users", uid);
-        const docSnap = await getDoc(docRef);
+        const docSnap =  (await getDoc(docRef)).data();
         let dataobj = {}
-        if (docSnap.data()["credits"]) {
+        if (docSnap && docSnap["credits"]) {
             dataobj = {
                 credits: docSnap.data()["credits"] + 5
             }
@@ -201,7 +197,7 @@ const ReportIncident: NextPage = () => {
             })
         });
         const phoneList = new Set()
-        usersData.forEach(p => {
+        usersData.forEach((p: any) => {
             phoneList.add(p.number)
             if (p.number1) phoneList.add(p.number1)
             if (p.number2) phoneList.add(p.number2)
@@ -270,7 +266,7 @@ const ReportIncident: NextPage = () => {
 
                     <FormControl w="90%" >
                         <FormLabel>Select Image (optional):</FormLabel>
-                        <Button isLoading={loading} w="full" _hover={{ bg: "green" }} onClick={handleClick} bg="green" mt="2vh" textColor={"white"} cursor="pointer" borderRadius={"10px"} fontSize={"16px"} textAlign={"center"} htmlFor='inp'>
+                        <Button isLoading={loading} w="full" _hover={{ bg: "green" }} onClick={handleClick} bg="green" mt="2vh" textColor={"white"} cursor="pointer" borderRadius={"10px"} fontSize={"16px"} textAlign={"center"} >
                             Upload Images
                             <Input onChange={handleChange} ref={hiddenFileInput} display={"none"} id="inp" type="file" />
                         </Button>

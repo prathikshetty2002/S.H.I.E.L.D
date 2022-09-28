@@ -1,7 +1,6 @@
 import { Box, Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { CircleMarker } from 'react-leaflet/CircleMarker';
-import { Popup } from 'react-leaflet/Popup';
+import { CircleMarker, Popup } from 'react-leaflet';
 
 
 const NaturalDisasters:React.FC = () => {
@@ -24,7 +23,7 @@ const NaturalDisasters:React.FC = () => {
     return (
         <>
         {
-            data?.map(d => (
+            data?.map((d:any) => (
                 <CircleMarker key={d.id} center={[d.location[1], d.location[0]]} pathOptions={{ color: 'red' }}  radius={25}>
               <Popup>
                 <Box>
