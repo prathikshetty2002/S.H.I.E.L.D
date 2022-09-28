@@ -83,8 +83,9 @@ Start the server
 ```bash
   http://localhost:3000
 ```
-    
-Things to add on:
+----
+ 
+## Things to add on:
 1. To add slicer and filters. So, that naviagtion to the targeted incident would be easy.
 2. To add different color for different category.
 3. To improve UI.
