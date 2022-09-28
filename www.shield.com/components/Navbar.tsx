@@ -16,6 +16,7 @@ import {
 import { useEffect, useState, useRef } from "react"
 import LoginModal from "./LoginModal"
 import { onAuthStateChanged, signOut } from "firebase/auth"
+import Link from "next/link"
 
 
 
@@ -97,8 +98,10 @@ const Navbar: React.FC = () => {
             <Box px={6} py={2}  zIndex="docked" rounded={"2xl"} alignItems="centepr" w="96"  bg={"blackAlpha.800"}
              display="flex"  shadow="2xl"  position="fixed" left="2" top="5" placeItems={"center"} justifyContent={"space-between"} >
                 <Box  >
-                    <Heading fontSize={"20px"} color="white" >S.H.I.E.L.D</Heading>
-                </Box>
+                    <a><Link href={"/"} >
+                        <Heading fontSize={"20px"} color="white" >S.H.I.E.L.D</Heading></Link></a>
+                        
+                    </Box>
                 <Button bg="whiteAlpha.800" onClick={onOpen} ref={btnRef} display={"flex"}>
                     <HamburgerIcon h={7} w={7} />
                 </Button>
