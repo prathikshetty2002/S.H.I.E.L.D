@@ -36,7 +36,24 @@ S.H.I.E.L.D provides a community which helps other by sharing/reporting the unce
 
 The main motive of S.H.I.E.L.D is to make an environment which helps the user and also make it aware about the situations and also about how to deal with that.
 
+## Snapshots
 
+
+| Home Page  | Our Features | Live Incident Tracker |
+|------------|--------------|-----------------------|
+| <img src="imgs/home.png" width="250"> | <img src="imgs/options.png" width="250"> | <img src="imgs/livereport.png" width="250"> | 
+
+| NGOs Mapping | NGOs Info | Register Incident |  
+|--------------|-----------|-------------------|
+| <img src="imgs/ngoregister.png" width="250"> | <img src="imgs/ngomarker.png" width="250"> | <img src="imgs/report.png" width="250"> |
+
+| Login  | Live Notifications | Donations |  
+|--------|--------------------|-----------|
+| <img src="imgs/login.png" width="250"> | <img src="imgs/MSG.jpeg" width="250"> | <img src="imgs/stripe.png" width="250"> |
+ 
+| Chatbot  | It's Features | Community Page  |  
+|----------|---------------|-----------------|
+| <img src="imgs/chatbot2.png" width="250"> | <img src="imgs/chatbot4.png" width="250"> | <img src="imgs/communitypage.png" width="250"> |
 
 
 ## Instructions on running project locally:
@@ -66,7 +83,14 @@ Start the server
 ```bash
   http://localhost:3000
 ```
-    
+----
+ 
+## Things to add on:
+1. To add slicer and filters. So, that naviagtion to the targeted incident would be easy.
+2. To add different marker for different category.
+3. To improve UI.
+
+
 ## Authors
 
 🔆 [@Mr-Jayesh](https://github.com/Mr-Jayesh)
