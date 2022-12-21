@@ -93,7 +93,7 @@ Start the server
 
 ## Authors
 
-🔆 [@Mr-Jayesh](https://github.com/Mr-Jayesh)
+🔆 [@JayeshVP24](https://github.com/JayeshVP24)
 
 🔆 [@R-ctrl-ctrl](https://github.com/R-ctrl-ctrl)
 
